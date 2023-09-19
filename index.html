@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Upcoming Provost Events</title>
-  <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@400;700&display=swap" rel="stylesheet">
+  <title>Upcoming Events</title>
   <script src="https://apis.google.com/js/api.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body, h3, p {
       font-family: 'Proxima Nova', sans-serif;
     }
-    h3.event-date {
+    h3 {
       font-weight: bold;
       color: #006eb3;
     }
@@ -17,7 +17,7 @@
       font-weight: bold;
       font-style: italic;
     }
-    p.event-time, p.event-description, p.event-location, a.event-location {
+    p.event-time, p.event-description, p.event-location {
       font-style: italic;
     }
     .event-container {
@@ -33,74 +33,73 @@
   </div>
 
   <script>
-    function addEventsToList() {
-      var sheet = SpreadsheetApp.getActiveSheet();
-      var rows = sheet.getRange('A2:H' + sheet.getLastRow()).getValues();
-      
-      var eventsList = document.getElementById('events-list');
+    function listUpcomingEvents() {
+      gapi.client.calendar.events.list({
+        'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
+        'timeMin': (new Date()).toISOString(),
+        'showDeleted': false,
+        'singleEvents': true,
+        'maxResults': 10,
+        'orderBy': 'startTime'
+      }).then(function(response) {
+        var events = response.result.items;
+        var eventsList = document.getElementById('events-list');
 
-      for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
+        if (events.length > 0) {
+          for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            var when = new Date(event.start.dateTime || event.start.date);
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            var formattedDate = when.toLocaleDateString('en-US', options);
 
-        // Create an individual event container
-        var eventDiv = document.createElement('div');
-        eventDiv.className = 'event-container';
+            var eventDiv = document.createElement('div');
+            eventDiv.className = 'event-container';
 
-        // Date
-        var eventDate = new Date(row[2]);
-        var options = { year: 'numeric', month: 'long', day: 'numeric' };
-        var formattedDate = eventDate.toLocaleDateString('en-US', options);
-        var dateElement = document.createElement('h3');
-        dateElement.className = 'event-date';
-        dateElement.textContent = formattedDate;
+            var dateElement = document.createElement('h3');
+            dateElement.textContent = formattedDate;
+            
+            var nameElement = document.createElement('p');
+            nameElement.className = 'event-name';
+            nameElement.textContent = event.summary;
+            
+            var timeElement = document.createElement('p');
+            timeElement.className = 'event-time';
+            timeElement.textContent = when.getHours() + ':' + when.getMinutes();
 
-        // Event name
-        var eventName = row[1];
-        var nameElement = document.createElement('p');
-        nameElement.className = 'event-name';
-        nameElement.textContent = eventName;
-
-        // Event time
-        var startTime = new Date(row[3]);
-        var endTime = new Date(row[7]);
-        var timeElement = document.createElement('p');
-        timeElement.className = 'event-time';
-        timeElement.textContent = startTime.getHours() + ':' + startTime.getMinutes() + ' - ' + endTime.getHours() + ':' + endTime.getMinutes();
-
-        // Event description
-        var eventDescription = row[5];
-        var descElement = document.createElement('p');
-        descElement.className = 'event-description';
-        descElement.textContent = eventDescription;
-
-        // Event location
-        var eventLocation = row[4];
-        var locationElement;
-        if (eventLocation.startsWith('http')) {
-          locationElement = document.createElement('a');
-          locationElement.className = 'event-location';
-          locationElement.href = eventLocation;
-          locationElement.textContent = 'Location Link';
+            var descElement = document.createElement('p');
+            descElement.className = 'event-description';
+            descElement.textContent = event.description || 'No description available';
+            
+            eventDiv.appendChild(dateElement);
+            eventDiv.appendChild(nameElement);
+            eventDiv.appendChild(timeElement);
+            eventDiv.appendChild(descElement);
+            eventsList.appendChild(eventDiv);
+          }
         } else {
-          locationElement = document.createElement('p');
-          locationElement.className = 'event-location';
-          locationElement.textContent = eventLocation;
+          var listItem = document.createElement('div');
+          listItem.textContent = 'No upcoming events found.';
+          eventsList.appendChild(listItem);
         }
-
-        // Append everything to the event container
-        eventDiv.appendChild(dateElement);
-        eventDiv.appendChild(nameElement);
-        eventDiv.appendChild(timeElement);
-        eventDiv.appendChild(descElement);
-        eventDiv.appendChild(locationElement);
-
-        // Append the event container to the events list
-        eventsList.appendChild(eventDiv);
-      }
+      });
     }
 
-    // Call the function to populate the list
-    addEventsToList();
+    function initClient() {
+      gapi.client.init({
+        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
+        'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+      }).then(function () {
+        listUpcomingEvents();
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client', initClient);
+    }
+  </script>
+
+  <script async defer src="https://apis.google.com/js/api.js"
+    onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
   </script>
 
 </body>
