@@ -14,56 +14,60 @@
 
   <script>
     function listUpcomingEvents() {
-  gapi.client.calendar.events.list({
-    'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
-    'timeMin': (new Date()).toISOString(),
-    'showDeleted': false,
-    'singleEvents': true,
-    'maxResults': 10,
-    'orderBy': 'startTime'
-  }).then(function(response) {
-    var events = response.result.items;
-    var eventsList = document.getElementById('events-list');
+      gapi.client.calendar.events.list({
+        'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
+        'timeMin': (new Date()).toISOString(),
+        'showDeleted': false,
+        'singleEvents': true,
+        'maxResults': 10,
+        'orderBy': 'startTime'
+      }).then(function(response) {
+        var events = response.result.items;
+        var eventsList = document.getElementById('events-list');
+        var currentDate = new Date();
 
-    if (events.length > 0) {
-      for (var i = 0; i < events.length; i++) {
-        var event = events[i];
-        var when = event.start.dateTime;
-        if (!when) {
-          when = event.start.date;
+        if (events.length > 0) {
+          for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            var eventDate = new Date(event.start.dateTime || event.start.date);
+
+            if (eventDate >= currentDate) {
+              var when = event.start.dateTime;
+              if (!when) {
+                when = event.start.date;
+              }
+              var listItem = document.createElement('li');
+              listItem.textContent = event.summary + ' (' + when + ')';
+              eventsList.appendChild(listItem);
+            }
+          }
+        } else {
+          var listItem = document.createElement('li');
+          listItem.textContent = 'No upcoming events found.';
+          eventsList.appendChild(listItem);
         }
-        var listItem = document.createElement('li');
-        listItem.textContent = event.summary + ' (' + when + ')';
-        eventsList.appendChild(listItem);
-      }
-    } else {
-      var listItem = document.createElement('li');
-      listItem.textContent = 'No upcoming events found.';
-      eventsList.appendChild(listItem);
+      });
     }
-  });
-}
 
-function initClient() {
-  gapi.client.init({
-    'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
-    'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-  }).then(function () {
-    gapi.client.load('calendar', 'v3', listUpcomingEvents);
-  });
-}
+    function initClient() {
+      gapi.client.init({
+        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',  // Remember to keep your API key secret
+        'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+      }).then(function () {
+        gapi.client.load('calendar', 'v3', listUpcomingEvents);
+      });
+    }
 
-function handleClientLoad() {
-  gapi.load('client', initClient);
-}
+    function handleClientLoad() {
+      gapi.load('client', initClient);
+    }
 
   </script>
 
-<!-- Google API script -->
-
+  <!-- Google API script -->
   <script async defer src="https://apis.google.com/js/api.js"
-  onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
-</script>
+    onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
+  </script>
 
 </body>
 </html>
