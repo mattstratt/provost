@@ -16,67 +16,91 @@
     p.event-name {
       font-weight: bold;
       font-style: italic;
-      color: black;
     }
-    p.event-time, p.event-info, p.event-link {
+    p.event-time, p.event-description, p.event-location, a.event-location {
       font-style: italic;
-      color: black;
     }
-    .event-break {
-      margin-bottom: 2em;
+    .event-container {
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
 
-  <h1>Engaging Activities for Students and Employees</h1>
+  <h1>Upcoming Events</h1>
   <div id="events-list">
     <!-- Events will be populated here -->
   </div>
 
   <script>
-    // ... (Your existing JavaScript code)
+    function addEventsToList() {
+      var sheet = SpreadsheetApp.getActiveSheet();
+      var rows = sheet.getRange('A2:H' + sheet.getLastRow()).getValues();
+      
+      var eventsList = document.getElementById('events-list');
 
-    if (events.length > 0) {
-      for (var i = 0; i < events.length; i++) {
-        var event = events[i];
-        var when = new Date(event.start.dateTime || event.start.date);
-        var options = { year: 'numeric', month: 'long', day: 'numeric' };
-        var formattedDate = when.toLocaleDateString('en-US', options);
-        
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+
+        // Create an individual event container
         var eventDiv = document.createElement('div');
-        eventDiv.className = 'event-break';
+        eventDiv.className = 'event-container';
 
+        // Date
+        var eventDate = new Date(row[2]);
+        var options = { year: 'numeric', month: 'long', day: 'numeric' };
+        var formattedDate = eventDate.toLocaleDateString('en-US', options);
         var dateElement = document.createElement('h3');
         dateElement.className = 'event-date';
         dateElement.textContent = formattedDate;
 
+        // Event name
+        var eventName = row[1];
         var nameElement = document.createElement('p');
         nameElement.className = 'event-name';
-        nameElement.textContent = event.summary;
+        nameElement.textContent = eventName;
 
-        // Add your other elements for time, info, and link here
-        // ...
+        // Event time
+        var startTime = new Date(row[3]);
+        var endTime = new Date(row[7]);
+        var timeElement = document.createElement('p');
+        timeElement.className = 'event-time';
+        timeElement.textContent = startTime.getHours() + ':' + startTime.getMinutes() + ' - ' + endTime.getHours() + ':' + endTime.getMinutes();
 
+        // Event description
+        var eventDescription = row[5];
+        var descElement = document.createElement('p');
+        descElement.className = 'event-description';
+        descElement.textContent = eventDescription;
+
+        // Event location
+        var eventLocation = row[4];
+        var locationElement;
+        if (eventLocation.startsWith('http')) {
+          locationElement = document.createElement('a');
+          locationElement.className = 'event-location';
+          locationElement.href = eventLocation;
+          locationElement.textContent = 'Location Link';
+        } else {
+          locationElement = document.createElement('p');
+          locationElement.className = 'event-location';
+          locationElement.textContent = eventLocation;
+        }
+
+        // Append everything to the event container
         eventDiv.appendChild(dateElement);
         eventDiv.appendChild(nameElement);
-        // Append other elements to eventDiv
-        // ...
+        eventDiv.appendChild(timeElement);
+        eventDiv.appendChild(descElement);
+        eventDiv.appendChild(locationElement);
 
+        // Append the event container to the events list
         eventsList.appendChild(eventDiv);
       }
-    } else {
-      var emptyElement = document.createElement('p');
-      emptyElement.textContent = 'No upcoming events found.';
-      eventsList.appendChild(emptyElement);
     }
 
-    // ... (The rest of your existing JavaScript code)
-  </script>
-
-  <!-- Google API script -->
-  <script async defer src="https://apis.google.com/js/api.js"
-    onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
+    // Call the function to populate the list
+    addEventsToList();
   </script>
 
 </body>
