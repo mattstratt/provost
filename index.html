@@ -1,12 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Engaging Activities for Students and Employees</title>
+  <meta charset="UTF-8">
+  <title>Upcoming Provost Events</title>
+  <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
-    <h2>Engaging Activities for Students and Employees</h2>
-    <ul>
-        <!-- Events will be dynamically inserted here -->
-    </ul>
+
+  <h1>Engaging Activities for Students and Employees</h1>
+  <ul id="events-list">
+    <!-- Events will be populated here -->
+  </ul>
+
+  <script>
+    function listUpcomingEvents() {
+  gapi.client.calendar.events.list({
+    'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
+    'timeMin': (new Date()).toISOString(),
+    'showDeleted': false,
+    'singleEvents': true,
+    'maxResults': 10,
+    'orderBy': 'startTime'
+  }).then(function(response) {
+    var events = response.result.items;
+    var eventsList = document.getElementById('events-list');
+
+    if (events.length > 0) {
+      for (var i = 0; i < events.length; i++) {
+        var event = events[i];
+        var when = event.start.dateTime;
+        if (!when) {
+          when = event.start.date;
+        }
+        var listItem = document.createElement('li');
+        listItem.textContent = event.summary + ' (' + when + ')';
+        eventsList.appendChild(listItem);
+      }
+    } else {
+      var listItem = document.createElement('li');
+      listItem.textContent = 'No upcoming events found.';
+      eventsList.appendChild(listItem);
+    }
+  });
+}
+
+function initClient() {
+  gapi.client.init({
+    'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
+    'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+  }).then(function () {
+    gapi.client.load('calendar', 'v3', listUpcomingEvents);
+  });
+}
+
+function handleClientLoad() {
+  gapi.load('client', initClient);
+}
+
+  </script>
+
+<!-- Google API script -->
+
+  <script async defer src="https://apis.google.com/js/api.js"
+  onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
+</script>
+
 </body>
 </html>
