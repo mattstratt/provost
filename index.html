@@ -69,6 +69,8 @@
             var description = event.description || 'No description available';
             var meetingLink = description.includes('Meeting Link: ') ? description.split('Meeting Link: ')[1] : null;
 
+            var eventContainer = document.createElement('div'); // Define eventContainer here
+
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
             dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -96,7 +98,6 @@
               descriptionElement.appendChild(linkElement);
             }
 
-            var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(infoElement);
             eventContainer.appendChild(timeElement);
