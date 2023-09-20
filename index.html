@@ -96,6 +96,10 @@
               descriptionElement.appendChild(linkElement);
             }
 
+              // Create a new paragraph element for the link
+              var linkParagraph = document.createElement('p');
+              linkParagraph.appendChild(linkElement);
+
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(infoElement);
