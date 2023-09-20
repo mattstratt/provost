@@ -7,17 +7,15 @@
     h1 {
       font-family: 'Proxima Nova', sans-serif;
     }
-    h3.event-date, p.event-name, p.event-time, p.event-description, p.event-link {
-      font-family: 'Proxima Nova', sans-serif;
-      color: black;
-      margin: 4px 0; /* Reduced spacing between elements */
-    }
-    .event-container {
-      margin-bottom: 32px; /* Double spacing between events */
-    }
     h3.event-date {
+      font-family: 'Proxima Nova', sans-serif;
       color: #006eb3;
       font-weight: bold;
+    }
+    p {
+      font-family: 'Proxima Nova', sans-serif;
+      color: black;
+      margin: 0.2em 0; /* Adjust spacing */
     }
     p.event-name {
       font-weight: bold;
@@ -25,10 +23,6 @@
     }
     p.event-time {
       font-style: italic;
-    }
-    p.event-link {
-      color: blue;
-      text-decoration: underline;
     }
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
@@ -47,8 +41,7 @@
       var ampm = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12;
       hours = hours ? hours : 12;
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      return hours + ':' + minutes + ' ' + ampm;
+      return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
     }
 
     function listUpcomingEvents() {
@@ -62,6 +55,8 @@
       }).then(function(response) {
         var events = response.result.items;
         var eventsList = document.getElementById('events-list');
+        
+        console.log('Fetched events:', events); // For debugging
 
         if (events.length > 0) {
           for (var i = 0; i < events.length; i++) {
@@ -69,16 +64,9 @@
             var startDateTime = new Date(event.start.dateTime || event.start.date);
             var endDateTime = new Date(event.end.dateTime || event.end.date);
 
-            // Format time
-            var formattedStartTime = formatTime(startDateTime);
-            var formattedEndTime = formatTime(endDateTime);
-
-            var options = { year: 'numeric', month: 'long', day: 'numeric' };
-            var formattedDate = startDateTime.toLocaleDateString("en-US", options); 
-
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
-            dateElement.textContent = formattedDate;
+            dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
             var nameElement = document.createElement('p');
             nameElement.className = 'event-name';
@@ -86,31 +74,31 @@
 
             var timeElement = document.createElement('p');
             timeElement.className = 'event-time';
-            timeElement.textContent = `${formattedStartTime} - ${formattedEndTime}`;
+            timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
 
             var descriptionElement = document.createElement('p');
             descriptionElement.className = 'event-description';
             descriptionElement.textContent = event.description || 'No description available';
 
-            var linkElement = document.createElement('p');
-            linkElement.className = 'event-link';
-            linkElement.textContent = event.extendedProperties.private.meetingLink || 'No meeting link available';
-
             var eventContainer = document.createElement('div');
-            eventContainer.className = 'event-container';
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(nameElement);
             eventContainer.appendChild(timeElement);
             eventContainer.appendChild(descriptionElement);
-            eventContainer.appendChild(linkElement);
 
             eventsList.appendChild(eventContainer);
+
+            // Add extra space after each event listing
+            var breakElement = document.createElement('br');
+            eventsList.appendChild(breakElement);
           }
         } else {
           var noEventsElement = document.createElement('p');
           noEventsElement.textContent = 'No upcoming events found.';
           eventsList.appendChild(noEventsElement);
         }
+      }).catch(function(error) {
+        console.error('Error fetching events:', error); // For debugging
       });
     }
 
