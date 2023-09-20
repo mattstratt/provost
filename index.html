@@ -47,15 +47,6 @@
       return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
     }
 
-    function extractLinkFromDescription(description) {
-      // Parse the event description to find a link (e.g., https://example.com)
-      var matches = description.match(/\bhttps?:\/\/\S+\b/g);
-      if (matches && matches.length > 0) {
-        return matches[0];
-      }
-      return '';
-    }
-
     function listUpcomingEvents() {
       gapi.client.calendar.events.list({
         'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
@@ -73,7 +64,9 @@
             var event = events[i];
             var startDateTime = new Date(event.start.dateTime || event.start.date);
             var endDateTime = new Date(event.end.dateTime || event.end.date);
+            var eventLink = event.htmlLink;
             var eventLocation = event.location || 'Location not specified';
+            var meetingLink = event.description.split("Meeting Link: ")[1];
 
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
@@ -91,20 +84,17 @@
             descriptionElement.className = 'event-description';
             descriptionElement.textContent = event.description || 'No description available';
 
-            var eventLink = extractLinkFromDescription(event.description);
-            if (eventLink) {
-              var linkElement = document.createElement('a');
-              linkElement.className = 'event-link';
-              linkElement.href = eventLink;
-              linkElement.textContent = "Click here for more details";
-              descriptionElement.appendChild(linkElement);
-            }
+            var linkElement = document.createElement('a');
+            linkElement.className = 'event-link';
+            linkElement.href = meetingLink || eventLink;
+            linkElement.textContent = "Click here for more details";
 
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(infoElement);
             eventContainer.appendChild(timeElement);
             eventContainer.appendChild(descriptionElement);
+            eventContainer.appendChild(linkElement);
 
             eventsList.appendChild(eventContainer);
 
