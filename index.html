@@ -66,6 +66,7 @@
             var endDateTime = new Date(event.end.dateTime || event.end.date);
             var eventLink = event.htmlLink;
             var eventLocation = event.location || 'Location not specified';
+            var meetingLink = event.extendedProperties.private.meetingLink || ''; // Assuming column G contains the meeting links
 
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
@@ -85,9 +86,12 @@
 
             var linkElement = document.createElement('a');
             linkElement.className = 'event-link';
-            linkElement.href = event.htmlLink; // This will link directly to the Google Calendar event page
-            linkElement.textContent = "Click here for more details";
-
+            if (meetingLink && meetingLink.trim() !== "") {
+              linkElement.href = meetingLink.trim();
+              linkElement.textContent = "Click here for more details";
+            } else {
+              linkElement.textContent = "No meeting link available";
+            }
 
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
