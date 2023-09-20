@@ -66,7 +66,7 @@
             var endDateTime = new Date(event.end.dateTime || event.end.date);
             var eventLink = event.htmlLink;
             var eventLocation = event.location || 'Location not specified';
-            var meetingLink = event.extendedProperties.private.meetingLink || ''; // Assuming column G contains the meeting links
+            var meetingLink = event.description || '';
 
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
@@ -86,12 +86,8 @@
 
             var linkElement = document.createElement('a');
             linkElement.className = 'event-link';
-            if (meetingLink && meetingLink.trim() !== "") {
-              linkElement.href = meetingLink.trim();
-              linkElement.textContent = "Click here for more details";
-            } else {
-              linkElement.textContent = "No meeting link available";
-            }
+            linkElement.href = meetingLink;
+            linkElement.textContent = "Click here for more details";
 
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
@@ -115,7 +111,7 @@
 
     function initClient() {
       gapi.client.init({
-        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
+        'apiKey': 'YOUR_API_KEY', // Replace with your API key
         'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
       }).then(function () {
         gapi.client.load('calendar', 'v3', listUpcomingEvents);
