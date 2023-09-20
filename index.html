@@ -84,18 +84,23 @@
             descriptionElement.className = 'event-description';
             descriptionElement.textContent = event.description || 'No description available';
 
-            var linkElement = document.createElement('a');
-            linkElement.className = 'event-link';
-            linkElement.href = meetingLink || eventLink;
-            linkElement.textContent = "Click here for more details";
-            linkElement.target = "_blank"; // This opens the link in a new tab/window
+            if (meetingLink) {
+              var linkElement = document.createElement('a');
+              linkElement.className = 'event-link';
+              linkElement.href = meetingLink;
+              linkElement.textContent = "Click here for more details";
+              linkElement.target = "_blank"; // This opens the link in a new tab/window
+            }
 
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(infoElement);
             eventContainer.appendChild(timeElement);
             eventContainer.appendChild(descriptionElement);
-            eventContainer.appendChild(linkElement);
+
+            if (meetingLink) {
+              eventContainer.appendChild(linkElement);
+            }
 
             eventsList.appendChild(eventContainer);
 
