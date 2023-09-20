@@ -85,8 +85,9 @@
 
             var linkElement = document.createElement('a');
             linkElement.className = 'event-link';
-            linkElement.href = eventLink;
+            linkElement.href = event.htmlLink; // This will link directly to the Google Calendar event page
             linkElement.textContent = "Click here for more details";
+
 
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
