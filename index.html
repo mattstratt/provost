@@ -64,9 +64,8 @@
             var event = events[i];
             var startDateTime = new Date(event.start.dateTime || event.start.date);
             var endDateTime = new Date(event.end.dateTime || event.end.date);
-            var eventLink = event.htmlLink;
+            var eventLink = event.link; // Change to event.link to pull from Column G
             var eventLocation = event.location || 'Location not specified';
-            var meetingLink = event.description || '';
 
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
@@ -86,7 +85,7 @@
 
             var linkElement = document.createElement('a');
             linkElement.className = 'event-link';
-            linkElement.href = meetingLink;
+            linkElement.href = eventLink;
             linkElement.textContent = "Click here for more details";
 
             var eventContainer = document.createElement('div');
@@ -111,7 +110,7 @@
 
     function initClient() {
       gapi.client.init({
-        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg', // Replace with your API key
+        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
         'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
       }).then(function () {
         gapi.client.load('calendar', 'v3', listUpcomingEvents);
