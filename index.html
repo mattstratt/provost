@@ -93,12 +93,14 @@
               linkElement.href = meetingLink;
               linkElement.textContent = "Click here for more details";
               linkElement.target = "_blank"; // This opens the link in a new tab/window
-              descriptionElement.appendChild(linkElement);
-            }
-
+              
               // Create a new paragraph element for the link
               var linkParagraph = document.createElement('p');
               linkParagraph.appendChild(linkElement);
+
+              // Append the link paragraph to the event container
+              eventContainer.appendChild(linkParagraph);
+            }
 
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
