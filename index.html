@@ -2,21 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Engaging Activities for Students and Employees</title>
+  <title>Upcoming Provost Events</title>
   <style>
     h1 {
-      font-family: 'Proxima Nova', Verdana, Geneva, Tahoma, sans-serif;
-      color: #006eb3;
-      text-align: center;
-      font-size: medium;
+      font-family: 'Proxima Nova', sans-serif;
     }
-      
-      h3.event-date {
-      font-family: 'Proxima Nova', Verdana, Geneva, Tahoma, sans-serif;
+    h3.event-date {
+      font-family: 'Proxima Nova', sans-serif;
       color: #006eb3;
+      font-weight: bold;
     }
     p.event-name, p.event-time, p.event-description, p.event-location {
-      font-family: 'Proxima Nova', Verdana, Geneva, Tahoma, sans-serif;
+      font-family: 'Proxima Nova', sans-serif;
       color: black;
     }
     p.event-name {
@@ -40,11 +37,7 @@
     function formatTime(dateObj) {
       var hours = dateObj.getHours();
       var minutes = dateObj.getMinutes();
-      var ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      return hours + ':' + minutes + ' ' + ampm;
+      return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
     }
 
     function listUpcomingEvents() {
@@ -69,7 +62,29 @@
             var formattedStartTime = formatTime(startDateTime);
             var formattedEndTime = formatTime(endDateTime);
 
-            // ... (same as before, no changes here)
+            var dateElement = document.createElement('h3');
+            dateElement.className = 'event-date';
+            dateElement.textContent = startDateTime.toDateString();
+
+            var nameElement = document.createElement('p');
+            nameElement.className = 'event-name';
+            nameElement.textContent = event.summary;
+
+            var timeElement = document.createElement('p');
+            timeElement.className = 'event-time';
+            timeElement.textContent = `${formattedStartTime} - ${formattedEndTime}`;
+
+            var descriptionElement = document.createElement('p');
+            descriptionElement.className = 'event-description';
+            descriptionElement.textContent = event.description || 'No description available';
+
+            var eventContainer = document.createElement('div');
+            eventContainer.appendChild(dateElement);
+            eventContainer.appendChild(nameElement);
+            eventContainer.appendChild(timeElement);
+            eventContainer.appendChild(descriptionElement);
+
+            eventsList.appendChild(eventContainer);
           }
         } else {
           var noEventsElement = document.createElement('p');
