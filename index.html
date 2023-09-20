@@ -7,14 +7,17 @@
     h1 {
       font-family: 'Proxima Nova', sans-serif;
     }
-    h3.event-date {
-      font-family: 'Proxima Nova', sans-serif;
-      color: #006eb3;
-      font-weight: bold;
-    }
-    p.event-name, p.event-time, p.event-description, p.event-link {
+    h3.event-date, p.event-name, p.event-time, p.event-description, p.event-link {
       font-family: 'Proxima Nova', sans-serif;
       color: black;
+      margin: 4px 0; /* Reduced spacing between elements */
+    }
+    .event-container {
+      margin-bottom: 32px; /* Double spacing between events */
+    }
+    h3.event-date {
+      color: #006eb3;
+      font-weight: bold;
     }
     p.event-name {
       font-weight: bold;
@@ -70,9 +73,12 @@
             var formattedStartTime = formatTime(startDateTime);
             var formattedEndTime = formatTime(endDateTime);
 
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            var formattedDate = startDateTime.toLocaleDateString("en-US", options); 
+
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
-            dateElement.textContent = startDateTime.toDateString();
+            dateElement.textContent = formattedDate;
 
             var nameElement = document.createElement('p');
             nameElement.className = 'event-name';
@@ -91,6 +97,7 @@
             linkElement.textContent = event.extendedProperties.private.meetingLink || 'No meeting link available';
 
             var eventContainer = document.createElement('div');
+            eventContainer.className = 'event-container';
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(nameElement);
             eventContainer.appendChild(timeElement);
