@@ -90,12 +90,6 @@
               descriptionElement.textContent = description;
             }
 
-            var linkElement = document.createElement('a');
-            linkElement.className = 'event-link';
-            linkElement.href = meetingLink || eventLink;
-            linkElement.textContent = "Click here for more details";
-            linkElement.target = "_blank"; // This opens the link in a new tab/window
-
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(infoElement);
@@ -103,6 +97,11 @@
             eventContainer.appendChild(descriptionElement);
 
             if (meetingLink) {
+              var linkElement = document.createElement('a');
+              linkElement.className = 'event-link';
+              linkElement.href = meetingLink || eventLink;
+              linkElement.textContent = "Click here for more details";
+              linkElement.target = "_blank"; // This opens the link in a new tab/window
               eventContainer.appendChild(linkElement);
             }
 
