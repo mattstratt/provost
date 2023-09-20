@@ -17,8 +17,11 @@
       color: black;
       margin: 0.2em 0;
     }
-    p.event-name, p.event-time {
+    p.event-info {
       font-weight: bold;
+    }
+    span.event-location {
+      font-weight: normal;
     }
     a.event-link {
       font-style: italic;
@@ -55,21 +58,22 @@
       }).then(function(response) {
         var events = response.result.items;
         var eventsList = document.getElementById('events-list');
-        
+
         if (events.length > 0) {
           for (var i = 0; i < events.length; i++) {
             var event = events[i];
             var startDateTime = new Date(event.start.dateTime || event.start.date);
             var endDateTime = new Date(event.end.dateTime || event.end.date);
             var eventLink = event.htmlLink;
+            var eventLocation = event.location || 'Location not specified';
 
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
             dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-            var nameElement = document.createElement('p');
-            nameElement.className = 'event-name';
-            nameElement.textContent = event.summary;
+            var infoElement = document.createElement('p');
+            infoElement.className = 'event-info';
+            infoElement.innerHTML = `${event.summary} - <span class="event-location">${eventLocation}</span>`;
 
             var timeElement = document.createElement('p');
             timeElement.className = 'event-time';
@@ -83,16 +87,16 @@
             linkElement.className = 'event-link';
             linkElement.href = eventLink;
             linkElement.textContent = "Click here for more details";
-            
+
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
-            eventContainer.appendChild(nameElement);
+            eventContainer.appendChild(infoElement);
             eventContainer.appendChild(timeElement);
             eventContainer.appendChild(descriptionElement);
             eventContainer.appendChild(linkElement);
 
             eventsList.appendChild(eventContainer);
-            
+
             var breakElement = document.createElement('br');
             eventsList.appendChild(breakElement);
           }
