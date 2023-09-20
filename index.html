@@ -88,6 +88,7 @@
             linkElement.className = 'event-link';
             linkElement.href = meetingLink || eventLink;
             linkElement.textContent = "Click here for more details";
+            linkElement.target = "_blank"; // This opens the link in a new tab/window
 
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
