@@ -82,7 +82,13 @@
 
             var descriptionElement = document.createElement('p');
             descriptionElement.className = 'event-description';
-            descriptionElement.textContent = event.description || 'No description available';
+
+            // Check if there is a Meeting Link before adding "Meeting Link: " to the description
+            if (meetingLink) {
+              descriptionElement.textContent = `Event Description: ${event.description}`;
+            } else {
+              descriptionElement.textContent = event.description || 'No description available';
+            }
 
             if (meetingLink) {
               var linkElement = document.createElement('a');
