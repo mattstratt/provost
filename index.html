@@ -95,11 +95,12 @@
   linkElement.href = meetingLink;
   linkElement.textContent = "Click here for more details";
   linkElement.target = "_blank"; // This opens the link in a new tab/window
-  
-  // Add a page break (hr element) after the event description
-  descriptionElement.appendChild(linkElement); // Add the hyperlink
-  var pageBreak = document.createElement('hr');
-  descriptionElement.appendChild(pageBreak); // Add the page break
+
+  // Wrap the link in a <div> for a new line
+  var linkContainer = document.createElement('div');
+  linkContainer.appendChild(linkElement);
+
+  descriptionElement.appendChild(linkContainer); // Add the wrapped link
 }
 
             eventContainer.appendChild(dateElement);
