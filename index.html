@@ -90,13 +90,17 @@
             descriptionElement.textContent = meetingLink ? description : description.replace('Meeting Link: ', '');
 
             if (meetingLink) {
-              var linkElement = document.createElement('a');
-              linkElement.className = 'event-link';
-              linkElement.href = meetingLink;
-              linkElement.textContent = "Click here for more details";
-              linkElement.target = "_blank"; // This opens the link in a new tab/window
-              descriptionElement.appendChild(linkElement);
-            }
+  var linkElement = document.createElement('a');
+  linkElement.className = 'event-link';
+  linkElement.href = meetingLink;
+  linkElement.textContent = "Click here for more details";
+  linkElement.target = "_blank"; // This opens the link in a new tab/window
+  
+  // Add a page break (hr element) after the event description
+  descriptionElement.appendChild(linkElement); // Add the hyperlink
+  var pageBreak = document.createElement('hr');
+  descriptionElement.appendChild(pageBreak); // Add the page break
+}
 
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(infoElement);
