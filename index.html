@@ -12,7 +12,7 @@
       color: #006eb3;
       font-weight: bold;
     }
-    p.event-name, p.event-time, p.event-description, p.event-location {
+    p.event-name, p.event-time, p.event-description, p.event-link {
       font-family: 'Proxima Nova', sans-serif;
       color: black;
     }
@@ -22,6 +22,10 @@
     }
     p.event-time {
       font-style: italic;
+    }
+    p.event-link {
+      color: blue;
+      text-decoration: underline;
     }
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
@@ -34,16 +38,15 @@
   </div>
 
   <script>
-function formatTime(dateObj) {
-  var hours = dateObj.getHours();
-  var minutes = dateObj.getMinutes();
-  var ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  return hours + ':' + minutes + ' ' + ampm;
-}
-
+    function formatTime(dateObj) {
+      var hours = dateObj.getHours();
+      var minutes = dateObj.getMinutes();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      return hours + ':' + minutes + ' ' + ampm;
+    }
 
     function listUpcomingEvents() {
       gapi.client.calendar.events.list({
@@ -83,11 +86,16 @@ function formatTime(dateObj) {
             descriptionElement.className = 'event-description';
             descriptionElement.textContent = event.description || 'No description available';
 
+            var linkElement = document.createElement('p');
+            linkElement.className = 'event-link';
+            linkElement.textContent = event.extendedProperties.private.meetingLink || 'No meeting link available';
+
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(nameElement);
             eventContainer.appendChild(timeElement);
             eventContainer.appendChild(descriptionElement);
+            eventContainer.appendChild(linkElement);
 
             eventsList.appendChild(eventContainer);
           }
