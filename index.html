@@ -66,8 +66,9 @@
             var endDateTime = new Date(event.end.dateTime || event.end.date);
             var eventLink = event.htmlLink;
             var eventLocation = event.location || 'Location not specified';
-            var meetingLink = event.description.split("Meeting Link: ")[1];
-
+            var description = event.description || 'No description available';
+            var meetingLink = description.includes('Meeting Link:') ? description.split('Meeting Link:')[1] : null;
+            
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
             dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -82,13 +83,7 @@
 
             var descriptionElement = document.createElement('p');
             descriptionElement.className = 'event-description';
-            
-            // Check if there is a Meeting Link before adding "Meeting Link: " to the description
-            if (meetingLink) {
-              descriptionElement.textContent = `Event Description: ${event.description.replace("Meeting Link: " + meetingLink, "")}`;
-            } else {
-              descriptionElement.textContent = event.description || 'No description available';
-            }
+            descriptionElement.textContent = meetingLink ? `Event Description: ${description.replace('Meeting Link:' + meetingLink, '')}` : description;
 
             var linkElement = document.createElement('a');
             linkElement.className = 'event-link';
