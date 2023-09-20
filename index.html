@@ -34,6 +34,12 @@
   </div>
 
   <script>
+    function formatTime(dateObj) {
+      var hours = dateObj.getHours();
+      var minutes = dateObj.getMinutes();
+      return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+    }
+
     function listUpcomingEvents() {
       gapi.client.calendar.events.list({
         'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
@@ -49,16 +55,16 @@
         if (events.length > 0) {
           for (var i = 0; i < events.length; i++) {
             var event = events[i];
-            var when = new Date(event.start.dateTime || event.start.date);
+            var startDateTime = new Date(event.start.dateTime || event.start.date);
+            var endDateTime = new Date(event.end.dateTime || event.end.date);
 
             // Format time
-            var hours = when.getHours();
-            var minutes = when.getMinutes();
-            var formattedTime = (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+            var formattedStartTime = formatTime(startDateTime);
+            var formattedEndTime = formatTime(endDateTime);
 
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
-            dateElement.textContent = when.toDateString();
+            dateElement.textContent = startDateTime.toDateString();
 
             var nameElement = document.createElement('p');
             nameElement.className = 'event-name';
@@ -66,7 +72,7 @@
 
             var timeElement = document.createElement('p');
             timeElement.className = 'event-time';
-            timeElement.textContent = formattedTime;
+            timeElement.textContent = `${formattedStartTime} - ${formattedEndTime}`;
 
             var descriptionElement = document.createElement('p');
             descriptionElement.className = 'event-description';
