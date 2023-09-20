@@ -15,14 +15,14 @@
     p {
       font-family: 'Proxima Nova', sans-serif;
       color: black;
-      margin: 0.2em 0; /* Adjust spacing */
+      margin: 0.2em 0;
     }
-    p.event-name {
+    p.event-name, p.event-time {
       font-weight: bold;
-      font-style: italic;
     }
-    p.event-time {
+    a.event-link {
       font-style: italic;
+      color: blue;
     }
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
@@ -56,13 +56,12 @@
         var events = response.result.items;
         var eventsList = document.getElementById('events-list');
         
-        console.log('Fetched events:', events); // For debugging
-
         if (events.length > 0) {
           for (var i = 0; i < events.length; i++) {
             var event = events[i];
             var startDateTime = new Date(event.start.dateTime || event.start.date);
             var endDateTime = new Date(event.end.dateTime || event.end.date);
+            var eventLink = event.htmlLink;
 
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
@@ -80,15 +79,20 @@
             descriptionElement.className = 'event-description';
             descriptionElement.textContent = event.description || 'No description available';
 
+            var linkElement = document.createElement('a');
+            linkElement.className = 'event-link';
+            linkElement.href = eventLink;
+            linkElement.textContent = "Click here for more details";
+            
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(nameElement);
             eventContainer.appendChild(timeElement);
             eventContainer.appendChild(descriptionElement);
+            eventContainer.appendChild(linkElement);
 
             eventsList.appendChild(eventContainer);
-
-            // Add extra space after each event listing
+            
             var breakElement = document.createElement('br');
             eventsList.appendChild(breakElement);
           }
@@ -97,8 +101,6 @@
           noEventsElement.textContent = 'No upcoming events found.';
           eventsList.appendChild(noEventsElement);
         }
-      }).catch(function(error) {
-        console.error('Error fetching events:', error); // For debugging
       });
     }
 
