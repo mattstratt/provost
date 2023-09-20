@@ -82,21 +82,19 @@
 
             var descriptionElement = document.createElement('p');
             descriptionElement.className = 'event-description';
-
+            
             // Check if there is a Meeting Link before adding "Meeting Link: " to the description
             if (meetingLink) {
-              descriptionElement.textContent = `Event Description: ${event.description}`;
+              descriptionElement.textContent = `Event Description: ${event.description.replace("Meeting Link: " + meetingLink, "")}`;
             } else {
               descriptionElement.textContent = event.description || 'No description available';
             }
 
-            if (meetingLink) {
-              var linkElement = document.createElement('a');
-              linkElement.className = 'event-link';
-              linkElement.href = meetingLink;
-              linkElement.textContent = "Click here for more details";
-              linkElement.target = "_blank"; // This opens the link in a new tab/window
-            }
+            var linkElement = document.createElement('a');
+            linkElement.className = 'event-link';
+            linkElement.href = meetingLink || eventLink;
+            linkElement.textContent = "Click here for more details";
+            linkElement.target = "_blank"; // This opens the link in a new tab/window
 
             var eventContainer = document.createElement('div');
             eventContainer.appendChild(dateElement);
