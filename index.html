@@ -4,28 +4,7 @@
   <meta charset="UTF-8">
   <title>Engaging Activities for Students and Employees</title>
   <style>
-      h1 {
-      font-family: 'Proxima Nova', Verdana, Geneva, Tahoma, sans-serif;
-      color: #006eb3;
-      text-align: center;
-      font-size: medium;
-    }
-    
-    h3.event-date {
-      font-family: 'Proxima Nova', Verdana, Geneva, Tahoma, sans-serif;
-      color: #006eb3;
-    }
-    p.event-name, p.event-time, p.event-description, p.event-location {
-      font-family: 'Proxima Nova', Verdana, Geneva, Tahoma, sans-serif;
-      color: black;
-    }
-    p.event-name {
-      font-weight: bold;
-      font-style: italic;
-    }
-    p.event-time {
-      font-style: italic;
-    }
+    /* Your styles here */
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
 </head>
@@ -42,21 +21,54 @@
       var minutes = dateObj.getMinutes();
       var ampm = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12;
-      hours = hours ? hours : 12; // the hour '0' should be '12'
+      hours = hours ? hours : 12;
       minutes = minutes < 10 ? '0' + minutes : minutes;
       return hours + ':' + minutes + ' ' + ampm;
     }
 
     function listUpcomingEvents() {
-      // ... (same as before, no changes here)
+      gapi.client.calendar.events.list({
+        'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
+        'timeMin': (new Date()).toISOString(),
+        'showDeleted': false,
+        'singleEvents': true,
+        'maxResults': 10,
+        'orderBy': 'startTime'
+      }).then(function(response) {
+        var events = response.result.items;
+        var eventsList = document.getElementById('events-list');
+
+        if (events.length > 0) {
+          for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            var startDateTime = new Date(event.start.dateTime || event.start.date);
+            var endDateTime = new Date(event.end.dateTime || event.end.date);
+
+            // Format time
+            var formattedStartTime = formatTime(startDateTime);
+            var formattedEndTime = formatTime(endDateTime);
+
+            // ... (same as before, no changes here)
+          }
+        } else {
+          var noEventsElement = document.createElement('p');
+          noEventsElement.textContent = 'No upcoming events found.';
+          eventsList.appendChild(noEventsElement);
+        }
+      });
     }
 
     function initClient() {
-      // ... (same as before, no changes here)
+      gapi.client.init({
+        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
+        'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+      }).then(function () {
+        gapi.client.load('calendar', 'v3', listUpcomingEvents);
+      });
     }
 
     function handleClientLoad() {
-      // ... (same as before, no changes here)
+      gapi.load('client', initClient);
     }
   </script>
 
