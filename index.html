@@ -85,13 +85,9 @@
 
             var descriptionElement = document.createElement('p');
             descriptionElement.className = 'event-description';
-
-            // Add "Meeting Link: " only if a link is present in the description
-            if (meetingLink) {
-              descriptionElement.textContent = `Meeting Link: ${meetingLink}`;
-            } else {
-              descriptionElement.textContent = description;
-            }
+            
+            // Only add "Meeting Link: " if a link is present in the description
+            descriptionElement.textContent = meetingLink ? description : description.replace('Meeting Link: ', '');
 
             if (meetingLink) {
               var linkElement = document.createElement('a');
@@ -99,7 +95,7 @@
               linkElement.href = meetingLink;
               linkElement.textContent = "Click here for more details";
               linkElement.target = "_blank"; // This opens the link in a new tab/window
-              eventContainer.appendChild(linkElement);
+              descriptionElement.appendChild(linkElement);
             }
 
             eventContainer.appendChild(dateElement);
