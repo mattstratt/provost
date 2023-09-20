@@ -85,9 +85,13 @@
 
             var descriptionElement = document.createElement('p');
             descriptionElement.className = 'event-description';
-            
-            // Remove "Meeting Link: " if a link is present in the description
-            descriptionElement.textContent = meetingLink ? description.replace('Meeting Link: ', '') : description;
+
+            // Add "Meeting Link: " only if a link is present in the description
+            if (meetingLink) {
+              descriptionElement.textContent = `Meeting Link: ${meetingLink}`;
+            } else {
+              descriptionElement.textContent = description;
+            }
 
             if (meetingLink) {
               var linkElement = document.createElement('a');
