@@ -2,32 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Upcoming Events</title>
-  <script src="https://apis.google.com/js/api.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@400;700&display=swap" rel="stylesheet">
+  <title>Upcoming Provost Events</title>
   <style>
-    body, h3, p {
+    h1 {
       font-family: 'Proxima Nova', sans-serif;
     }
-    h3 {
-      font-weight: bold;
+    h3.event-date {
+      font-family: 'Proxima Nova', sans-serif;
       color: #006eb3;
+      font-weight: bold;
+    }
+    p.event-name, p.event-time, p.event-description, p.event-location {
+      font-family: 'Proxima Nova', sans-serif;
+      color: black;
     }
     p.event-name {
       font-weight: bold;
       font-style: italic;
     }
-    p.event-time, p.event-description, p.event-location {
+    p.event-time {
       font-style: italic;
     }
-    .event-container {
-      margin-bottom: 20px;
-    }
   </style>
+  <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
 
-  <h1>Upcoming Events</h1>
+  <h1>Engaging Activities for Students and Employees</h1>
   <div id="events-list">
     <!-- Events will be populated here -->
   </div>
@@ -49,37 +50,40 @@
           for (var i = 0; i < events.length; i++) {
             var event = events[i];
             var when = new Date(event.start.dateTime || event.start.date);
-            var options = { year: 'numeric', month: 'long', day: 'numeric' };
-            var formattedDate = when.toLocaleDateString('en-US', options);
 
-            var eventDiv = document.createElement('div');
-            eventDiv.className = 'event-container';
+            // Format time
+            var hours = when.getHours();
+            var minutes = when.getMinutes();
+            var formattedTime = (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
 
             var dateElement = document.createElement('h3');
-            dateElement.textContent = formattedDate;
-            
+            dateElement.className = 'event-date';
+            dateElement.textContent = when.toDateString();
+
             var nameElement = document.createElement('p');
             nameElement.className = 'event-name';
             nameElement.textContent = event.summary;
-            
+
             var timeElement = document.createElement('p');
             timeElement.className = 'event-time';
-            timeElement.textContent = when.getHours() + ':' + when.getMinutes();
+            timeElement.textContent = formattedTime;
 
-            var descElement = document.createElement('p');
-            descElement.className = 'event-description';
-            descElement.textContent = event.description || 'No description available';
-            
-            eventDiv.appendChild(dateElement);
-            eventDiv.appendChild(nameElement);
-            eventDiv.appendChild(timeElement);
-            eventDiv.appendChild(descElement);
-            eventsList.appendChild(eventDiv);
+            var descriptionElement = document.createElement('p');
+            descriptionElement.className = 'event-description';
+            descriptionElement.textContent = event.description || 'No description available';
+
+            var eventContainer = document.createElement('div');
+            eventContainer.appendChild(dateElement);
+            eventContainer.appendChild(nameElement);
+            eventContainer.appendChild(timeElement);
+            eventContainer.appendChild(descriptionElement);
+
+            eventsList.appendChild(eventContainer);
           }
         } else {
-          var listItem = document.createElement('div');
-          listItem.textContent = 'No upcoming events found.';
-          eventsList.appendChild(listItem);
+          var noEventsElement = document.createElement('p');
+          noEventsElement.textContent = 'No upcoming events found.';
+          eventsList.appendChild(noEventsElement);
         }
       });
     }
@@ -89,7 +93,7 @@
         'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
         'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
       }).then(function () {
-        listUpcomingEvents();
+        gapi.client.load('calendar', 'v3', listUpcomingEvents);
       });
     }
 
@@ -98,8 +102,9 @@
     }
   </script>
 
+  <!-- Google API script -->
   <script async defer src="https://apis.google.com/js/api.js"
-    onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
+  onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
   </script>
 
 </body>
