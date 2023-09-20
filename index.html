@@ -34,11 +34,16 @@
   </div>
 
   <script>
-    function formatTime(dateObj) {
-      var hours = dateObj.getHours();
-      var minutes = dateObj.getMinutes();
-      return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
-    }
+function formatTime(dateObj) {
+  var hours = dateObj.getHours();
+  var minutes = dateObj.getMinutes();
+  var ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  return hours + ':' + minutes + ' ' + ampm;
+}
+
 
     function listUpcomingEvents() {
       gapi.client.calendar.events.list({
