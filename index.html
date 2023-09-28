@@ -36,6 +36,11 @@
       color: blue;
       font-size: medium;
     }
+    p.event-for {
+      font-family: 'Proxima Nova', sans-serif;
+      color: black;
+      font-size: medium;
+    }
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
 </head>
@@ -46,7 +51,7 @@
     Please participate and help us spread the word!
   </p>
   
-    <br>
+  <br>
   <div id="events-list">
     <!-- Events will be populated here -->
   </div>
@@ -64,7 +69,8 @@
     function listUpcomingEvents() {
       gapi.client.calendar.events.list({
         'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
-        'timeMin': (new Date()).toISOString(),
+        'timeMin': new Date().toISOString(),
+        'timeMax': new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 59).toISOString(),
         'showDeleted': false,
         'singleEvents': true,
         'maxResults': 10,
@@ -118,7 +124,7 @@
               descriptionElement.appendChild(linkContainer); // Add the wrapped link
             }
 
-            // Add "Who is this Event For" information if available
+            // Add "Who is this Event For" if available
             if (eventFor) {
               var eventForElement = document.createElement('p');
               eventForElement.className = 'event-for';
