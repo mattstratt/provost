@@ -46,7 +46,7 @@
     Please participate and help us spread the word!
   </p>
   
-    <br>
+  <br>
   <div id="events-list">
     <!-- Events will be populated here -->
   </div>
@@ -62,6 +62,12 @@
     }
 
     function listUpcomingEvents() {
+      // Get the current date
+      var currentDate = new Date();
+
+      // Get the current month (0-indexed, so January is 0)
+      var currentMonth = currentDate.getMonth();
+
       gapi.client.calendar.events.list({
         'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
         'timeMin': (new Date()).toISOString(),
@@ -83,53 +89,59 @@
             var description = event.description || 'No description available';
             var meetingLink = description.includes('Meeting Link: ') ? description.split('Meeting Link: ')[1] : null;
 
-            var eventContainer = document.createElement('div'); // Define eventContainer here
+            // Get the month of the event (0-indexed)
+            var eventMonth = startDateTime.getMonth();
 
-            var dateElement = document.createElement('h3');
-            dateElement.className = 'event-date';
-            dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            // Check if the event's month matches the current month
+            if (eventMonth === currentMonth) {
+              var eventContainer = document.createElement('div'); // Define eventContainer here
 
-            var infoElement = document.createElement('p');
-            infoElement.className = 'event-info';
-            infoElement.innerHTML = `${event.summary} - <span class="event-location">${eventLocation}</span>`;
+              var dateElement = document.createElement('h3');
+              dateElement.className = 'event-date';
+              dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-            var timeElement = document.createElement('p');
-            timeElement.className = 'event-time';
-            timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
+              var infoElement = document.createElement('p');
+              infoElement.className = 'event-info';
+              infoElement.innerHTML = `${event.summary} - <span class="event-location">${eventLocation}</span>`;
 
-            var descriptionElement = document.createElement('p');
-            descriptionElement.className = 'event-description';
-            
-            // Only add "Meeting Link: " if a link is present in the description
-            descriptionElement.textContent = meetingLink ? description : description.replace('Meeting Link: ', '');
+              var timeElement = document.createElement('p');
+              timeElement.className = 'event-time';
+              timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
 
-            if (meetingLink) {
-  var linkElement = document.createElement('a');
-  linkElement.className = 'event-link';
-  linkElement.href = meetingLink;
-  linkElement.textContent = "Click here for more details";
-  linkElement.target = "_blank"; // This opens the link in a new tab/window
+              var descriptionElement = document.createElement('p');
+              descriptionElement.className = 'event-description';
 
-  // Wrap the link in a <div> for a new line
-  var linkContainer = document.createElement('div');
-  linkContainer.appendChild(linkElement);
+              // Only add "Meeting Link: " if a link is present in the description
+              descriptionElement.textContent = meetingLink ? description : description.replace('Meeting Link: ', '');
 
-  descriptionElement.appendChild(linkContainer); // Add the wrapped link
-}
+              if (meetingLink) {
+                var linkElement = document.createElement('a');
+                linkElement.className = 'event-link';
+                linkElement.href = meetingLink;
+                linkElement.textContent = "Click here for more details";
+                linkElement.target = "_blank"; // This opens the link in a new tab/window
 
-            eventContainer.appendChild(dateElement);
-            eventContainer.appendChild(infoElement);
-            eventContainer.appendChild(timeElement);
-            eventContainer.appendChild(descriptionElement);
+                // Wrap the link in a <div> for a new line
+                var linkContainer = document.createElement('div');
+                linkContainer.appendChild(linkElement);
 
-            eventsList.appendChild(eventContainer);
+                descriptionElement.appendChild(linkContainer); // Add the wrapped link
+              }
 
-            var breakElement = document.createElement('br');
-            eventsList.appendChild(breakElement);
+              eventContainer.appendChild(dateElement);
+              eventContainer.appendChild(infoElement);
+              eventContainer.appendChild(timeElement);
+              eventContainer.appendChild(descriptionElement);
+
+              eventsList.appendChild(eventContainer);
+
+              var breakElement = document.createElement('br');
+              eventsList.appendChild(breakElement);
+            }
           }
         } else {
           var noEventsElement = document.createElement('p');
-          noEventsElement.textContent = 'No upcoming events found.';
+          noEventsElement.textContent = 'No upcoming events found for this month.';
           eventsList.appendChild(noEventsElement);
         }
       });
