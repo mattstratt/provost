@@ -31,6 +31,11 @@
       font-weight: normal;
       font-size: medium;
     }
+    p.event-for {
+      font-family: 'Proxima Nova', sans-serif;
+      color: black;
+      font-size: medium;
+    }
     a.event-link {
       font-style: italic;
       color: blue;
@@ -104,6 +109,10 @@
               infoElement.className = 'event-info';
               infoElement.innerHTML = `${event.summary} - <span class="event-location">${eventLocation}</span>`;
 
+              var eventForElement = document.createElement('p'); // Create the element for "Who is this Event For"
+              eventForElement.className = 'event-for';
+              eventForElement.textContent = `For: ${event['Who is this Event For'] || 'Not specified'}`;
+
               var timeElement = document.createElement('p');
               timeElement.className = 'event-time';
               timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
@@ -130,6 +139,7 @@
 
               eventContainer.appendChild(dateElement);
               eventContainer.appendChild(infoElement);
+              eventContainer.appendChild(eventForElement); // Add the "Who is this Event For" element
               eventContainer.appendChild(timeElement);
               eventContainer.appendChild(descriptionElement);
 
