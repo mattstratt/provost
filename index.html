@@ -129,10 +129,9 @@
             if (eventFor) {
               var eventForElement = document.createElement('p');
               eventForElement.className = 'event-for';
-              var eventForText = document.createTextNode("Who is this Event For: ");
-              var eventForStrong = document.createElement('strong');
-              eventForStrong.appendChild(eventForText);
-              eventForElement.appendChild(eventForStrong);
+              var eventForText = document.createElement('strong');
+              eventForText.textContent = "Who is this Event For: ";
+              eventForElement.appendChild(eventForText);
               eventForElement.appendChild(document.createTextNode(eventFor));
               descriptionElement.appendChild(eventForElement);
             }
