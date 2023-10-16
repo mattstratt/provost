@@ -98,11 +98,10 @@
             var eventLink = event.htmlLink;
             var eventLocation = event.location || 'Location not specified';
             var description = event.description || 'No description available';
-            var meetingLink = description.includes('Meeting Link: ') ? description.split('Meeting Link: ')[1] : null;
-            var eventFor = description.includes('Who is this Event For: ') ? description.split('Who is this Event For: ')[1] : null;
-            var sponsoredBy = description.includes('Sponsored By: ') ? description.split('Sponsored By: ')[1] : null;
-            var information = description.includes('Information About the Event: ') ? description.split('Information About the Event: ')[1] : null;
-            var registrationLink = description.includes('Registration or Virtual Meeting Link: ') ? description.split('Registration or Virtual Meeting Link: ')[1] : null;
+            var meetingLink = description.includes('Meeting Link: ') ? description.split('Meeting Link: ')[1] : 'Not specified';
+            var eventFor = description.includes('Who is this Event For: ') ? description.split('Who is this Event For: ')[1] : 'Not specified';
+            var sponsoredBy = description.includes('Sponsored By: ') ? description.split('Sponsored By: ')[1] : 'Not specified';
+            var information = description.includes('Information About the Event: ') ? description.split('Information About the Event: ')[1] : 'Not specified';
 
             if (startDateTime.getMonth() === currentMonth) {
               var eventContainer = document.createElement('div'); // Define eventContainer here
@@ -111,32 +110,32 @@
               dateElement.className = 'event-date';
               dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-              var infoElement = document.createElement('p');
-              infoElement.className = 'event-info';
-              infoElement.innerHTML = `${event.summary} - <span class="event-location">${eventLocation}</span>`;
-
-              var sponsoredByElement = document.createElement('p');
-              sponsoredByElement.className = 'event-sponsored-by';
-              sponsoredByElement.innerHTML = `<strong>Sponsored By:</strong> ${sponsoredBy || 'Not specified'}`;
-
-              var whoElement = document.createElement('p');
-              whoElement.className = 'event-who';
-              whoElement.innerHTML = `<strong>Who is this Event For:</strong> ${eventFor || 'Not specified'}`;
-
-              var registrationElement = document.createElement('p');
-              registrationElement.className = 'event-registration';
-              registrationElement.innerHTML = `<strong>Registration or Virtual Meeting Link (If Applicable):</strong> ${registrationLink || 'Not specified'}`;
+              var titleElement = document.createElement('p');
+              titleElement.className = 'event-info';
+              titleElement.textContent = event.summary;
 
               var timeElement = document.createElement('p');
               timeElement.className = 'event-time';
               timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
 
+              var sponsoredByElement = document.createElement('p');
+              sponsoredByElement.className = 'event-sponsored-by';
+              sponsoredByElement.innerHTML = `<strong>Sponsored By:</strong> ${sponsoredBy}`;
+
+              var whoElement = document.createElement('p');
+              whoElement.className = 'event-who';
+              whoElement.innerHTML = `<strong>Who is this Event For:</strong> ${eventFor}`;
+
+              var registrationElement = document.createElement('p');
+              registrationElement.className = 'event-registration';
+              registrationElement.innerHTML = `<strong>Registration or Virtual Meeting Link:</strong> ${meetingLink}`;
+
               eventContainer.appendChild(dateElement);
-              eventContainer.appendChild(sponsoredByElement); // Sponsored By
-              eventContainer.appendChild(whoElement); // Who is this Event For
-              eventContainer.appendChild(registrationElement); // Registration or Virtual Meeting Link
-              eventContainer.appendChild(infoElement);
+              eventContainer.appendChild(titleElement); // Event Title
               eventContainer.appendChild(timeElement);
+              eventContainer.appendChild(sponsoredByElement);
+              eventContainer.appendChild(whoElement);
+              eventContainer.appendChild(registrationElement);
 
               eventsList.appendChild(eventContainer);
 
