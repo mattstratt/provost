@@ -38,7 +38,7 @@
     }
     p.event-for {
       font-family: 'Proxima Nova', sans-serif;
-      font-weight: bold; /* Added font-weight for "Who is this Event For" */
+      font-weight: bold;
       color: black;
       font-size: 12px;
     }
@@ -114,9 +114,25 @@
 
             var descriptionElement = document.createElement('p');
             descriptionElement.className = 'event-description';
+
+            // Define the bold keywords and split the description accordingly
+            var boldKeywords = ["Sponsored By:", "Who is this Event For:", "Information About the Event:", "Registration or Virtual Meeting Link (If Applicable):"];
+            var descriptionParts = description.split('\n');
             
-            // Only add "Meeting Link: " if a link is present in the description
-            descriptionElement.textContent = meetingLink ? description : description.replace('Meeting Link: ', '');
+            // Process each description part and make keywords bold
+            descriptionParts.forEach(function(part) {
+              var isBold = false;
+              for (var j = 0; j < boldKeywords.length; j++) {
+                if (part.includes(boldKeywords[j])) {
+                  descriptionElement.innerHTML += `<strong>${boldKeywords[j]}</strong> ${part.replace(boldKeywords[j], '')}<br>`;
+                  isBold = true;
+                  break;
+                }
+              }
+              if (!isBold) {
+                descriptionElement.innerHTML += `${part}<br>`;
+              }
+            });
 
             if (meetingLink) {
               var linkElement = document.createElement('a');
@@ -130,17 +146,6 @@
               linkContainer.appendChild(linkElement);
 
               descriptionElement.appendChild(linkContainer); // Add the wrapped link
-            }
-
-            // Add "Who is this Event For" if available
-            if (eventFor) {
-              var eventForElement = document.createElement('p');
-              eventForElement.className = 'event-for';
-              var eventForText = document.createElement('strong');
-              eventForText.textContent = "Who is this Event For: ";
-              eventForElement.appendChild(eventForText);
-              eventForElement.appendChild(document.createTextNode(eventFor));
-              descriptionElement.appendChild(eventForElement);
             }
 
             eventContainer.appendChild(dateElement);
