@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <title>Upcoming Provost Events</title>
   <style>
     h1 {
@@ -126,9 +127,9 @@
               for (var j = 0; j < boldKeywords.length; j++) {
                 if (part.includes(boldKeywords[j])) {
                   if (boldKeywords[j] === "Registration or Virtual Meeting Link (If Applicable):") {
-                    descriptionElement.innerHTML += `<b>${boldKeywords[j]} ${part.replace(boldKeywords[j], '').trim()}</b>`;
-                  } else {
                     descriptionElement.innerHTML += `<b>${boldKeywords[j]}</b> ${part.replace(boldKeywords[j], '').trim()}`;
+                  } else {
+                    descriptionElement.innerHTML += `<b>${boldKeywords[j]}</b><br>${part.replace(boldKeywords[j], '').trim()}`;
                   }
                   isBold = true;
                   break;
