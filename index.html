@@ -42,7 +42,7 @@
       font-weight: bold;
     }
     b {
-      font-weight: bold;
+      font-weight: bold; /* Add this line to make <b> content bold */
     }
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
@@ -118,7 +118,7 @@
             descriptionElement.className = 'event-description';
 
             // Define the bold keywords and split the description accordingly
-            var boldKeywords = ["Sponsored By:", "Who is this Event For:", "Information About the Event:", "Location:", "Registration or Virtual Meeting Link (If Applicable):"];
+            var boldKeywords = ["Sponsored By:", "Who is this Event for?:", "Information About the Event:", "Location:", "Registration or Virtual Meeting Link (If Applicable):"];
             var descriptionParts = description.split('\n');
             
             // Process each description part and make keywords bold
@@ -126,11 +126,7 @@
               var isBold = false;
               for (var j = 0; j < boldKeywords.length; j++) {
                 if (part.includes(boldKeywords[j])) {
-                  if (boldKeywords[j] === "Registration or Virtual Meeting Link (If Applicable):") {
-                    descriptionElement.innerHTML += `<b>${boldKeywords[j]}</b> ${part.replace(boldKeywords[j], '').trim()}`;
-                  } else {
-                    descriptionElement.innerHTML += `<b>${boldKeywords[j]}</b><br>${part.replace(boldKeywords[j], '').trim()}`;
-                  }
+                  descriptionElement.innerHTML += `<b>${boldKeywords[j]}</b> ${part.replace(boldKeywords[j], '')}<br>`;
                   isBold = true;
                   break;
                 }
