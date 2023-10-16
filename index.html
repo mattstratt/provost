@@ -68,10 +68,17 @@
     }
 
     function listUpcomingEvents() {
+      // Calculate the start and end of the current month
+      var currentDate = new Date();
+      var currentYear = currentDate.getFullYear();
+      var currentMonth = currentDate.getMonth();
+      var firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+      var lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+
       gapi.client.calendar.events.list({
         'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
-        'timeMin': new Date().toISOString(),
-        'timeMax': new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 59).toISOString(),
+        'timeMin': firstDayOfMonth.toISOString(),
+        'timeMax': lastDayOfMonth.toISOString(),
         'showDeleted': false,
         'singleEvents': true,
         'maxResults': 10,
