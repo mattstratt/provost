@@ -42,6 +42,9 @@
       color: black;
       font-size: 12px;
     }
+    strong {
+      font-weight: bold;
+    }
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
 </head>
@@ -139,13 +142,7 @@
             });
 
             if (meetingLink) {
-              var linkElement = document.createElement('a');
-              linkElement.className = 'event-link';
-              linkElement.href = meetingLink;
-              linkElement.textContent = "Click here for more details";
-              linkElement.target = "_blank"; // This opens the link in a new tab/window
-
-              descriptionElement.innerHTML += `<strong>Registration or Virtual Meeting Link (If Applicable):</strong> ${linkElement.outerHTML}`;
+              descriptionElement.innerHTML += `<strong>Registration or Virtual Meeting Link (If Applicable):</strong> ${meetingLink}<br>`;
             }
 
             eventContainer.appendChild(dateElement);
