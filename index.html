@@ -28,7 +28,7 @@
       font-size: 12px;
     }
     span.event-location {
-      font-weight: bold;
+      font-weight: normal;
       font-size: 12px;
     }
     a.event-link {
@@ -36,13 +36,7 @@
       color: blue;
       font-size: 12px;
     }
-    p.event-for {
-      font-family: 'Proxima Nova', sans-serif;
-      font-weight: bold;
-      color: black;
-      font-size: 12px;
-    }
-    strong {
+    p.event-for, p.event-location {
       font-weight: bold;
     }
   </style>
@@ -109,11 +103,7 @@
 
             var infoElement = document.createElement('p');
             infoElement.className = 'event-info';
-            infoElement.innerHTML = `${event.summary}`;
-
-            var locationElement = document.createElement('span');
-            locationElement.className = 'event-location';
-            locationElement.textContent = eventLocation;
+            infoElement.innerHTML = `${event.summary} - <span class="event-location">${eventLocation}</span>`;
 
             var timeElement = document.createElement('p');
             timeElement.className = 'event-time';
@@ -125,7 +115,7 @@
             // Define the bold keywords and split the description accordingly
             var boldKeywords = ["Sponsored By:", "Who is this Event For:", "Information About the Event:", "Registration or Virtual Meeting Link (If Applicable):"];
             var descriptionParts = description.split('\n');
-
+            
             // Process each description part and make keywords bold
             descriptionParts.forEach(function(part) {
               var isBold = false;
@@ -142,13 +132,12 @@
             });
 
             if (meetingLink) {
-              descriptionElement.innerHTML += `<strong>Registration or Virtual Meeting Link (If Applicable):</strong> ${meetingLink}<br>`;
+              descriptionElement.innerHTML += `<strong>Registration or Virtual Meeting Link (If Applicable): ${meetingLink}</strong><br>`;
             }
 
             eventContainer.appendChild(dateElement);
             eventContainer.appendChild(infoElement);
             eventContainer.appendChild(timeElement);
-            eventContainer.appendChild(locationElement);
             eventContainer.appendChild(descriptionElement);
 
             eventsList.appendChild(eventContainer);
