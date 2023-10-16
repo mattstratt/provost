@@ -24,11 +24,9 @@
       font-size: 10px;
     }
     p.event-info {
-      font-weight: bold;
       font-size: 12px;
     }
     span.event-location {
-      font-weight: normal;
       font-size: 12px;
     }
     a.event-link {
@@ -124,7 +122,7 @@
               var isBold = false;
               for (var j = 0; j < boldKeywords.length; j++) {
                 if (part.includes(boldKeywords[j])) {
-                  descriptionElement.innerHTML += `<strong>${boldKeywords[j]}</strong> ${part.replace(boldKeywords[j], '')}<br>`;
+                  descriptionElement.innerHTML += `<b>${boldKeywords[j]}</b> ${part.replace(boldKeywords[j], '')}<br>`;
                   isBold = true;
                   break;
                 }
@@ -135,7 +133,7 @@
             });
 
             if (meetingLink) {
-              descriptionElement.innerHTML += `<strong>Registration or Virtual Meeting Link (If Applicable): ${meetingLink}</strong>`;
+              descriptionElement.innerHTML += `<b>Registration or Virtual Meeting Link (If Applicable):</b> ${meetingLink}`;
             }
 
             eventContainer.appendChild(dateElement);
