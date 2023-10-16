@@ -36,18 +36,9 @@
       color: blue;
       font-size: 12px;
     }
-    p.event-for,
-    p.event-information,
-    p.event-registration-link {
+    p.event-for {
       font-family: 'Proxima Nova', sans-serif;
-      font-weight: bold;
-      color: black;
-      font-size: 12px;
-    }
-    p.event-sponsored-by,
-    p.event-who,
-    p.event-registration {
-      font-family: 'Proxima Nova', sans-serif;
+      font-weight: bold; /* Added font-weight for "Who is this Event For" */
       color: black;
       font-size: 12px;
     }
@@ -88,7 +79,6 @@
       }).then(function(response) {
         var events = response.result.items;
         var eventsList = document.getElementById('events-list');
-        var currentMonth = new Date().getMonth(); // Get the current month (0-11)
 
         if (events.length > 0) {
           for (var i = 0; i < events.length; i++) {
@@ -98,50 +88,51 @@
             var eventLink = event.htmlLink;
             var eventLocation = event.location || 'Location not specified';
             var description = event.description || 'No description available';
-            var meetingLink = description.includes('Meeting Link: ') ? description.split('Meeting Link: ')[1] : 'Not specified';
+            var meetingLink = description.includes('Registration or Virtual Meeting Link (If Applicable): ') ? description.split('Registration or Virtual Meeting Link (If Applicable): ')[1] : 'Not specified';
             var eventFor = description.includes('Who is this Event For: ') ? description.split('Who is this Event For: ')[1] : 'Not specified';
             var sponsoredBy = description.includes('Sponsored By: ') ? description.split('Sponsored By: ')[1] : 'Not specified';
-            var information = description.includes('Information About the Event: ') ? description.split('Information About the Event: ')[1] : 'Not specified';
 
-            if (startDateTime.getMonth() === currentMonth) {
-              var eventContainer = document.createElement('div'); // Define eventContainer here
+            var eventContainer = document.createElement('div'); // Define eventContainer here
 
-              var dateElement = document.createElement('h3');
-              dateElement.className = 'event-date';
-              dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            var dateElement = document.createElement('h3');
+            dateElement.className = 'event-date';
+            dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-              var titleElement = document.createElement('p');
-              titleElement.className = 'event-info';
-              titleElement.textContent = event.summary;
+            var titleElement = document.createElement('p');
+            titleElement.className = 'event-title';
+            titleElement.textContent = event.summary;
 
-              var timeElement = document.createElement('p');
-              timeElement.className = 'event-time';
-              timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
+            var timeElement = document.createElement('p');
+            timeElement.className = 'event-time';
+            timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
 
-              var sponsoredByElement = document.createElement('p');
-              sponsoredByElement.className = 'event-sponsored-by';
-              sponsoredByElement.innerHTML = `<strong>Sponsored By:</strong> ${sponsoredBy}`;
+            var sponsoredByElement = document.createElement('p');
+            sponsoredByElement.className = 'event-info';
+            sponsoredByElement.innerHTML = `<strong>Sponsored By:</strong> ${sponsoredBy}`;
 
-              var whoElement = document.createElement('p');
-              whoElement.className = 'event-who';
-              whoElement.innerHTML = `<strong>Who is this Event For:</strong> ${eventFor}`;
+            var eventForElement = document.createElement('p');
+            eventForElement.className = 'event-info';
+            eventForElement.innerHTML = `<strong>Who is this Event For:</strong> ${eventFor}`;
 
-              var registrationElement = document.createElement('p');
-              registrationElement.className = 'event-registration';
-              registrationElement.innerHTML = `<strong>Registration or Virtual Meeting Link:</strong> ${meetingLink}`;
-
-              eventContainer.appendChild(dateElement);
-              eventContainer.appendChild(titleElement); // Event Title
-              eventContainer.appendChild(timeElement);
-              eventContainer.appendChild(sponsoredByElement);
-              eventContainer.appendChild(whoElement);
-              eventContainer.appendChild(registrationElement);
-
-              eventsList.appendChild(eventContainer);
-
-              var breakElement = document.createElement('br');
-              eventsList.appendChild(breakElement);
+            var descriptionElement = document.createElement('p');
+            descriptionElement.className = 'event-description';
+            
+            // Only add "Registration or Virtual Meeting Link" if it's specified
+            if (meetingLink !== 'Not specified') {
+              descriptionElement.innerHTML = `<strong>Registration or Virtual Meeting Link (If Applicable):</strong> ${meetingLink}`;
             }
+
+            eventContainer.appendChild(dateElement);
+            eventContainer.appendChild(titleElement);
+            eventContainer.appendChild(timeElement);
+            eventContainer.appendChild(sponsoredByElement);
+            eventContainer.appendChild(eventForElement);
+            eventContainer.appendChild(descriptionElement);
+
+            eventsList.appendChild(eventContainer);
+
+            var breakElement = document.createElement('br');
+            eventsList.appendChild(breakElement);
           }
         } else {
           var noEventsElement = document.createElement('p');
