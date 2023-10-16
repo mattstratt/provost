@@ -44,7 +44,9 @@
       color: black;
       font-size: 12px;
     }
-    p.event-sponsored-by {
+    p.event-sponsored-by,
+    p.event-who,
+    p.event-registration {
       font-family: 'Proxima Nova', sans-serif;
       color: black;
       font-size: 12px;
@@ -113,17 +115,27 @@
               infoElement.className = 'event-info';
               infoElement.innerHTML = `${event.summary} - <span class="event-location">${eventLocation}</span>`;
 
+              var sponsoredByElement = document.createElement('p');
+              sponsoredByElement.className = 'event-sponsored-by';
+              sponsoredByElement.innerHTML = `<strong>Sponsored By:</strong> ${sponsoredBy || 'Not specified'}`;
+
+              var whoElement = document.createElement('p');
+              whoElement.className = 'event-who';
+              whoElement.innerHTML = `<strong>Who is this Event For:</strong> ${eventFor || 'Not specified'}`;
+
+              var registrationElement = document.createElement('p');
+              registrationElement.className = 'event-registration';
+              registrationElement.innerHTML = `<strong>Registration or Virtual Meeting Link (If Applicable):</strong> ${registrationLink || 'Not specified'}`;
+
               var timeElement = document.createElement('p');
               timeElement.className = 'event-time';
               timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
 
-              var sponsoredByElement = document.createElement('p');
-              sponsoredByElement.className = 'event-sponsored-by';
-              sponsoredByElement.textContent = `Sponsored By: ${sponsoredBy || 'Not specified'}`;
-
               eventContainer.appendChild(dateElement);
+              eventContainer.appendChild(sponsoredByElement); // Sponsored By
+              eventContainer.appendChild(whoElement); // Who is this Event For
+              eventContainer.appendChild(registrationElement); // Registration or Virtual Meeting Link
               eventContainer.appendChild(infoElement);
-              eventContainer.appendChild(sponsoredByElement); // Add Sponsored By
               eventContainer.appendChild(timeElement);
 
               eventsList.appendChild(eventContainer);
