@@ -37,11 +37,15 @@
       font-size: 12px;
     }
     p.event-for,
-    p.event-sponsored-by,
     p.event-information,
     p.event-registration-link {
       font-family: 'Proxima Nova', sans-serif;
       font-weight: bold;
+      color: black;
+      font-size: 12px;
+    }
+    p.event-sponsored-by {
+      font-family: 'Proxima Nova', sans-serif;
       color: black;
       font-size: 12px;
     }
@@ -117,25 +121,10 @@
               sponsoredByElement.className = 'event-sponsored-by';
               sponsoredByElement.textContent = `Sponsored By: ${sponsoredBy || 'Not specified'}`;
 
-              var eventForElement = document.createElement('p');
-              eventForElement.className = 'event-for';
-              eventForElement.textContent = `Who is this Event For: ${eventFor || 'Not specified'}`;
-
-              var informationElement = document.createElement('p');
-              informationElement.className = 'event-information';
-              informationElement.textContent = `Information About the Event: ${information || 'Not specified'}`;
-
-              var registrationLinkElement = document.createElement('p');
-              registrationLinkElement.className = 'event-registration-link';
-              registrationLinkElement.textContent = `Registration or Virtual Meeting Link: ${registrationLink || 'Not specified'}`;
-
               eventContainer.appendChild(dateElement);
               eventContainer.appendChild(infoElement);
               eventContainer.appendChild(sponsoredByElement); // Add Sponsored By
-              eventContainer.appendChild(eventForElement); // Add Who is this Event For
-              eventContainer.appendChild(informationElement); // Add Information About the Event
               eventContainer.appendChild(timeElement);
-              eventContainer.appendChild(registrationLinkElement); // Add Registration or Virtual Meeting Link
 
               eventsList.appendChild(eventContainer);
 
