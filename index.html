@@ -57,6 +57,7 @@
       font-size: 12px;
     }
   </style>
+  <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
   <h1>Engaging Activities for Students and Employees</h1>
@@ -107,67 +108,109 @@
       var startDate = new Date(selectedYear, selectedMonth, 1);
       var endDate = new Date(selectedYear, parseInt(selectedMonth) + 1, 0, 23, 59, 59);
 
-      // Modify this part to fetch and display events based on startDate and endDate
-      // You can use a JSON array or an AJAX request to fetch events from your data source.
-      // Populate the events in the "events-list" div.
-      // Example:
-      var eventsList = document.getElementById('events-list');
-      eventsList.innerHTML = ''; // Clear previous events
-      
-      // Sample event data (replace with your data source)
-      var eventData = [
-        {
-          summary: 'Event 1',
-          startDateTime: '2023-10-05T10:00:00Z',
-          endDateTime: '2023-10-05T12:00:00Z',
-          location: 'Location 1',
-          description: 'Description 1',
-          eventLink: 'https://example.com/event1'
-        },
-        {
-          summary: 'Event 2',
-          startDateTime: '2023-10-10T15:00:00Z',
-          endDateTime: '2023-10-10T17:00:00Z',
-          location: 'Location 2',
-          description: 'Description 2',
-          eventLink: 'https://example.com/event2'
+      gapi.load('client', initClient);
+
+      function initClient() {
+        gapi.client.init({
+          apiKey: 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg', // Replace with your Google API key
+          discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+        }).then(function () {
+          gapi.client.load('calendar', 'v3', function() {
+            listUpcomingEvents(startDate, endDate);
+          });
+        });
+      }
+    }
+
+    function listUpcomingEvents(startDate, endDate) {
+      gapi.client.calendar.events.list({
+        calendarId: '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5', // Replace with your Google Calendar ID
+        timeMin: startDate.toISOString(),
+        timeMax: endDate.toISOString(),
+        showDeleted: false,
+        singleEvents: true,
+        maxResults: 10,
+        orderBy: 'startTime'
+      }).then(function(response) {
+        var events = response.result.items;
+        var eventsList = document.getElementById('events-list');
+
+        if (events.length > 0) {
+          for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            var startDateTime = new Date(event.start.dateTime || event.start.date);
+            var endDateTime = new Date(event.end.dateTime || event.end.date);
+            var eventLink = event.htmlLink;
+            var eventLocation = event.location || 'Location not specified';
+            var description = event.description || 'No description available';
+            var meetingLink = description.includes('Meeting Link: ') ? description.split('Meeting Link: ')[1] : null;
+            var eventFor = description.includes('Who is this Event For: ') ? description.split('Who is this Event For: ')[1] : null;
+
+            var eventContainer = document.createElement('div');
+
+            var dateElement = document.createElement('h3');
+            dateElement.className = 'event-date';
+            dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+            var infoElement = document.createElement('p');
+            infoElement.className = 'event-info';
+            infoElement.innerHTML = `${event.summary} - <span class="event-location">${eventLocation}</span>`;
+
+            var timeElement = document.createElement('p');
+            timeElement.className = 'event-time';
+            timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
+
+            var descriptionElement = document.createElement('p');
+            descriptionElement.className = 'event-description';
+
+            // Define the bold keywords and split the description accordingly
+            var boldKeywords = ["Sponsored By:", "Who is this Event for?:", "Information About the Event:", "Location:", "Registration or Virtual Meeting Link (If Applicable):"];
+            var descriptionParts = description.split('\n');
+            
+            // Process each description part and make keywords bold
+            descriptionParts.forEach(function(part) {
+              var isBold = false;
+              for (var j = 0; j < boldKeywords.length; j++) {
+                if (part.includes(boldKeywords[j])) {
+                  descriptionElement.innerHTML += `<b>${boldKeywords[j]}</b> ${part.replace(boldKeywords[j], '')}<br>`;
+                  isBold = true;
+                  break;
+                }
+              }
+              if (!isBold) {
+                descriptionElement.innerHTML += `${part}<br>`;
+              }
+            });
+
+            if (meetingLink) {
+              var linkElement = document.createElement('a');
+              linkElement.className = 'event-link';
+              linkElement.href = meetingLink;
+              linkElement.textContent = "Click here for more details";
+              linkElement.target = "_blank"; // This opens the link in a new tab/window
+
+              // Wrap the link in a <div> for a new line
+              var linkContainer = document.createElement('div');
+              linkContainer.appendChild(linkElement);
+
+              descriptionElement.appendChild(linkContainer); // Add the wrapped link
+            }
+
+            eventContainer.appendChild(dateElement);
+            eventContainer.appendChild(infoElement);
+            eventContainer.appendChild(timeElement);
+            eventContainer.appendChild(descriptionElement);
+
+            eventsList.appendChild(eventContainer);
+
+            var breakElement = document.createElement('br');
+            eventsList.appendChild(breakElement);
+          }
+        } else {
+          var noEventsElement = document.createElement('p');
+          noEventsElement.textContent = 'No upcoming events found.';
+          eventsList.appendChild(noEventsElement);
         }
-      ];
-
-      eventData.forEach(function(event) {
-        var startDateTime = new Date(event.startDateTime);
-        var endDateTime = new Date(event.endDateTime);
-        
-        var eventContainer = document.createElement('div');
-
-        var dateElement = document.createElement('h3');
-        dateElement.className = 'event-date';
-        dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-        var infoElement = document.createElement('p');
-        infoElement.className = 'event-info';
-        infoElement.innerHTML = `${event.summary} - <span class="event-location">${event.location}</span>`;
-
-        var timeElement = document.createElement('p');
-        timeElement.className = 'event-time';
-        timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
-
-        var descriptionElement = document.createElement('p');
-        descriptionElement.className = 'event-description';
-
-        // Format and add event details to descriptionElement
-        descriptionElement.innerHTML = `<b>Event Description:</b> ${event.description}<br>`;
-        descriptionElement.innerHTML += `<a class="event-link" href="${event.eventLink}" target="_blank">Click here for more details</a>`;
-
-        eventContainer.appendChild(dateElement);
-        eventContainer.appendChild(infoElement);
-        eventContainer.appendChild(timeElement);
-        eventContainer.appendChild(descriptionElement);
-
-        eventsList.appendChild(eventContainer);
-
-        var breakElement = document.createElement('br');
-        eventsList.appendChild(breakElement);
       });
     }
   </script>
