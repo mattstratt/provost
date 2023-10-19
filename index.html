@@ -44,15 +44,56 @@
     b {
       font-weight: bold; /* Add this line to make <b> content bold */
     }
+
+    /* New styles for dropdown and button */
+    .dropdown-btn {
+      font-family: 'Proxima Nova', sans-serif;
+      font-size: 12px;
+      padding: 5px 10px;
+      background-color: #006eb3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Style for the dropdown menu */
+    .dropdown-menu {
+      font-family: 'Proxima Nova', sans-serif;
+      font-size: 12px;
+    }
+
+    /* Style for the dropdown items */
+    .dropdown-item {
+      padding: 5px;
+    }
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
-
   <h1>Engaging Activities for Students and Employees</h1>
   <p style="font-family: 'Proxima Nova', sans-serif; color: black; font-size: 12px; text-align: center;">
     Please participate and help us spread the word!
   </p>
+  
+  <!-- Add a dropdown button and menu -->
+  <div>
+    <button class="dropdown-btn" onclick="showEvents()">Show Events</button>
+    <select id="month" class="dropdown-menu">
+      <option value="0">January</option>
+      <option value="1">February</option>
+      <option value="2">March</option>
+      <option value="3">April</option>
+      <option value="4">May</option>
+      <option value="5">June</option>
+      <option value="6">July</option>
+      <option value="7">August</option>
+      <option value="8">September</option>
+      <option value="9">October</option>
+      <option value="10">November</option>
+      <option value="11">December</option>
+    </select>
+    <input type="number" id="year" class="dropdown-menu" placeholder="Year">
+  </div>
   
   <br>
   <div id="events-list">
@@ -69,13 +110,14 @@
       return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
     }
 
-    function listUpcomingEvents() {
-      // Calculate the start and end of the current month
-      var currentDate = new Date();
-      var currentYear = currentDate.getFullYear();
-      var currentMonth = currentDate.getMonth();
-      var firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-      var lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+    function showEvents() {
+      // Get the selected month and year
+      const selectedMonth = document.getElementById("month").value;
+      const selectedYear = document.getElementById("year").value;
+      
+      // Calculate the start and end of the selected month
+      var firstDayOfMonth = new Date(selectedYear, selectedMonth, 1);
+      var lastDayOfMonth = new Date(selectedYear, selectedMonth + 1, 0, 23, 59, 59);
 
       gapi.client.calendar.events.list({
         'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
@@ -88,6 +130,9 @@
       }).then(function(response) {
         var events = response.result.items;
         var eventsList = document.getElementById('events-list');
+
+        // Clear the previous events
+        eventsList.innerHTML = '';
 
         if (events.length > 0) {
           for (var i = 0; i < events.length; i++) {
@@ -186,6 +231,5 @@
   <script async defer src="https://apis.google.com/js/api.js"
   onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
   </script>
-
 </body>
 </html>
