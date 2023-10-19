@@ -5,6 +5,7 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <title>Upcoming Provost Events</title>
   <style>
+    /* Your existing CSS styles here */
     h1 {
       font-family: 'Proxima Nova', sans-serif;
       font-size: 14px;
@@ -56,7 +57,6 @@
       font-size: 12px;
     }
   </style>
-  <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
   <h1>Engaging Activities for Students and Employees</h1>
@@ -105,35 +105,71 @@
       var selectedYear = document.getElementById('year').value;
       
       var startDate = new Date(selectedYear, selectedMonth, 1);
-      var endDate = new Date(selectedYear, selectedMonth + 1, 0, 23, 59, 59);
+      var endDate = new Date(selectedYear, parseInt(selectedMonth) + 1, 0, 23, 59, 59);
 
-      // Initialize the API client
-      gapi.load('client', initClient);
+      // Modify this part to fetch and display events based on startDate and endDate
+      // You can use a JSON array or an AJAX request to fetch events from your data source.
+      // Populate the events in the "events-list" div.
+      // Example:
+      var eventsList = document.getElementById('events-list');
+      eventsList.innerHTML = ''; // Clear previous events
+      
+      // Sample event data (replace with your data source)
+      var eventData = [
+        {
+          summary: 'Event 1',
+          startDateTime: '2023-10-05T10:00:00Z',
+          endDateTime: '2023-10-05T12:00:00Z',
+          location: 'Location 1',
+          description: 'Description 1',
+          eventLink: 'https://example.com/event1'
+        },
+        {
+          summary: 'Event 2',
+          startDateTime: '2023-10-10T15:00:00Z',
+          endDateTime: '2023-10-10T17:00:00Z',
+          location: 'Location 2',
+          description: 'Description 2',
+          eventLink: 'https://example.com/event2'
+        }
+      ];
 
-      function initClient() {
-        gapi.client.init({
-          'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg', // Replace with your API key
-          'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-        }).then(function () {
-          gapi.client.load('calendar', 'v3', function() {
-            listUpcomingEvents(startDate, endDate);
-          });
-        });
-      }
-    }
+      eventData.forEach(function(event) {
+        var startDateTime = new Date(event.startDateTime);
+        var endDateTime = new Date(event.endDateTime);
+        
+        var eventContainer = document.createElement('div');
 
-    // Modify the existing listUpcomingEvents function to accept startDate and endDate as parameters
-    function listUpcomingEvents(startDate, endDate) {
-      // Your existing code here
-      // Use startDate and endDate for API request
-      // Ensure your API request is correctly set up to filter events based on the selected date range
+        var dateElement = document.createElement('h3');
+        dateElement.className = 'event-date';
+        dateElement.textContent = startDateTime.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+        var infoElement = document.createElement('p');
+        infoElement.className = 'event-info';
+        infoElement.innerHTML = `${event.summary} - <span class="event-location">${event.location}</span>`;
+
+        var timeElement = document.createElement('p');
+        timeElement.className = 'event-time';
+        timeElement.textContent = `${formatTime(startDateTime)} - ${formatTime(endDateTime)}`;
+
+        var descriptionElement = document.createElement('p');
+        descriptionElement.className = 'event-description';
+
+        // Format and add event details to descriptionElement
+        descriptionElement.innerHTML = `<b>Event Description:</b> ${event.description}<br>`;
+        descriptionElement.innerHTML += `<a class="event-link" href="${event.eventLink}" target="_blank">Click here for more details</a>`;
+
+        eventContainer.appendChild(dateElement);
+        eventContainer.appendChild(infoElement);
+        eventContainer.appendChild(timeElement);
+        eventContainer.appendChild(descriptionElement);
+
+        eventsList.appendChild(eventContainer);
+
+        var breakElement = document.createElement('br');
+        eventsList.appendChild(breakElement);
+      });
     }
   </script>
-
-  <!-- Google API script -->
-  <script async defer src="https://apis.google.com/js/api.js"
-  onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
-  </script>
-
 </body>
 </html>
