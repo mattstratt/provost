@@ -5,7 +5,6 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <title>Upcoming Provost Events</title>
   <style>
-    /* Your existing CSS styles here */
     h1 {
       font-family: 'Proxima Nova', sans-serif;
       font-size: 14px;
@@ -45,46 +44,15 @@
     b {
       font-weight: bold; /* Add this line to make <b> content bold */
     }
-    
-    /* Additional styles for dropdown and button */
-    label {
-      font-family: 'Proxima Nova', sans-serif;
-      color: black;
-      font-size: 12px;
-    }
-    select, input, button {
-      font-family: 'Proxima Nova', sans-serif;
-      font-size: 12px;
-    }
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
+
   <h1>Engaging Activities for Students and Employees</h1>
   <p style="font-family: 'Proxima Nova', sans-serif; color: black; font-size: 12px; text-align: center;">
     Please participate and help us spread the word!
   </p>
-
-  <label for="month">Select Month:</label>
-  <select id="month">
-    <option value="0">January</option>
-    <option value="1">February</option>
-    <option value="2">March</option>
-    <option value="3">April</option>
-    <option value="4">May</option>
-    <option value="5">June</option>
-    <option value="6">July</option>
-    <option value="7">August</option>
-    <option value="8">September</option>
-    <option value="9">October</option>
-    <option value="10">November</option>
-    <option value="11">December</option>
-  </select>
-
-  <label for="year">Select Year:</label>
-  <input type="number" id="year" min="2022" max="2030" step="1" value="2023">
-
-  <button onclick="listEventsForSelectedMonth()">Show Events</button>
   
   <br>
   <div id="events-list">
@@ -101,36 +69,13 @@
       return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
     }
 
-    function listEventsForSelectedMonth() {
-      var selectedMonth = document.getElementById('month').value;
-      var selectedYear = document.getElementById('year').value;
-      
-      var startDate = new Date(selectedYear, selectedMonth, 1);
-      var endDate = new Date(selectedYear, parseInt(selectedMonth) + 1, 0, 23, 59, 59);
-
-      gapi.load('client', initClient);
-
-      function initClient() {
-        gapi.client.init({
-          apiKey: 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg', // Replace with your Google API key
-          discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-        }).then(function () {
-          gapi.client.load('calendar', 'v3', function() {
-            listUpcomingEvents(startDate, endDate);
-          });
-        });
-      }
-    }
-
-    function listUpcomingEvents(startDate, endDate) {
+    function listUpcomingEvents() {
       gapi.client.calendar.events.list({
-        calendarId: '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5', // Replace with your Google Calendar ID
-        timeMin: startDate.toISOString(),
-        timeMax: endDate.toISOString(),
-        showDeleted: false,
-        singleEvents: true,
-        maxResults: 10,
-        orderBy: 'startTime'
+        'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
+        'showDeleted': false,
+        'singleEvents': true,
+        'maxResults': 10,
+        'orderBy': 'startTime'
       }).then(function(response) {
         var events = response.result.items;
         var eventsList = document.getElementById('events-list');
@@ -146,7 +91,7 @@
             var meetingLink = description.includes('Meeting Link: ') ? description.split('Meeting Link: ')[1] : null;
             var eventFor = description.includes('Who is this Event For: ') ? description.split('Who is this Event For: ')[1] : null;
 
-            var eventContainer = document.createElement('div');
+            var eventContainer = document.createElement('div'); // Define eventContainer here
 
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
@@ -213,6 +158,25 @@
         }
       });
     }
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
+        'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+      }).then(function () {
+        gapi.client.load('calendar', 'v3', listUpcomingEvents);
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client', initClient);
+    }
   </script>
+
+  <!-- Google API script -->
+  <script async defer src="https://apis.google.com/js/api.js"
+  onload="handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleClientLoad()">
+  </script>
+
 </body>
 </html>
