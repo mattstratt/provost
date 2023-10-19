@@ -5,7 +5,6 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <title>Upcoming Provost Events</title>
   <style>
-    /* Your existing CSS styles here */
     h1 {
       font-family: 'Proxima Nova', sans-serif;
       font-size: 14px;
@@ -45,7 +44,7 @@
     b {
       font-weight: bold; /* Add this line to make <b> content bold */
     }
-
+    
     /* Additional styles for dropdown and button */
     label {
       font-family: 'Proxima Nova', sans-serif;
@@ -92,7 +91,14 @@
   </div>
 
   <script>
-    // Your existing JavaScript functions here
+    function formatTime(dateObj) {
+      var hours = dateObj.getHours();
+      var minutes = dateObj.getMinutes();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
+    }
 
     function listEventsForSelectedMonth() {
       var selectedMonth = document.getElementById('month').value;
@@ -101,16 +107,26 @@
       var startDate = new Date(selectedYear, selectedMonth, 1);
       var endDate = new Date(selectedYear, selectedMonth + 1, 0, 23, 59, 59);
 
-      // You can use startDate and endDate to fetch events for the selected month and year
-      // Update your API call accordingly, e.g., 'timeMin': startDate.toISOString(), 'timeMax': endDate.toISOString()
-      
-      // Call the function to list events based on the selected month and year
-      listUpcomingEvents(startDate, endDate);
+      // Initialize the API client
+      gapi.load('client', initClient);
+
+      function initClient() {
+        gapi.client.init({
+          'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg', // Replace with your API key
+          'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+        }).then(function () {
+          gapi.client.load('calendar', 'v3', function() {
+            listUpcomingEvents(startDate, endDate);
+          });
+        });
+      }
     }
 
     // Modify the existing listUpcomingEvents function to accept startDate and endDate as parameters
     function listUpcomingEvents(startDate, endDate) {
       // Your existing code here
+      // Use startDate and endDate for API request
+      // Ensure your API request is correctly set up to filter events based on the selected date range
     }
   </script>
 
