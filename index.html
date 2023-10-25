@@ -44,6 +44,24 @@
     b {
       font-weight: bold; /* Add this line to make <b> content bold */
     }
+
+    /* Add styles for dropdown and button */
+    select {
+      font-family: 'Proxima Nova', sans-serif;
+      font-size: 12px;
+      margin: 0.2em 0;
+      padding: 5px;
+    }
+
+    button {
+      font-family: 'Proxima Nova', sans-serif;
+      font-size: 12px;
+      padding: 5px 10px;
+      background-color: #006eb3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
   </style>
   <script src="https://apis.google.com/js/api.js"></script>
 </head>
@@ -53,6 +71,26 @@
   <p style="font-family: 'Proxima Nova', sans-serif; color: black; font-size: 12px; text-align: center;">
     Please participate and help us spread the word!
   </p>
+
+  <!-- Add month and year selector dropdowns and button -->
+  <div>
+    <select id="monthSelector">
+      <option value="0">January</option>
+      <option value="1">February</option>
+      <option value="2">March</option>
+      <option value="3">April</option>
+      <option value="4">May</option>
+      <option value="5">June</option>
+      <option value="6">July</option>
+      <option value="7">August</option>
+      <option value="8">September</option>
+      <option value="9">October</option>
+      <option value="10">November</option>
+      <option value="11">December</option>
+    </select>
+    <input type="number" id="yearSelector" placeholder="Year" min="2000" max="2099">
+    <button id="filterButton">Filter Events</button>
+  </div>
   
   <br>
   <div id="events-list">
@@ -82,9 +120,14 @@
       }
     }
 
-    function listUpcomingEvents() {
+    function listUpcomingEvents(month, year) {
+      var startDate = new Date(year, month, 1);
+      var endDate = new Date(year, month + 1, 0, 23, 59, 59);
+
       gapi.client.calendar.events.list({
         'calendarId': '9d473971a24aa2563d5c86101bd0e5f2aa02b76e73846c97c7d967b2fc46a8e5@group.calendar.google.com',
+        'timeMin': startDate.toISOString(),
+        'timeMax': endDate.toISOString(),
         'showDeleted': false,
         'singleEvents': true,
         'maxResults': 10,
@@ -94,6 +137,8 @@
         var eventsList = document.getElementById('events-list');
 
         if (events.length > 0) {
+          eventsList.innerHTML = ''; // Clear the previous events
+
           for (var i = 0; i < events.length; i++) {
             var event = events[i];
             var startDateTime = new Date(event.start.dateTime || event.start.date);
@@ -101,7 +146,7 @@
             var eventLink = event.htmlLink;
             var eventLocation = event.location || 'Location not specified';
             var description = event.description || 'No description available';
-            var meetingLink = extractMeetingLink(description);
+            var meetingLink = extractMeetingLink(description); // Extract meeting link
             var eventFor = description.includes('Who is this Event For: ') ? description.split('Who is this Event For: ')[1] : null;
 
             var eventContainer = document.createElement('div'); // Define eventContainer here
@@ -166,7 +211,7 @@
           }
         } else {
           var noEventsElement = document.createElement('p');
-          noEventsElement.textContent = 'No upcoming events found.';
+          noEventsElement.textContent = 'No upcoming events found for the selected month and year.';
           eventsList.appendChild(noEventsElement);
         }
       });
@@ -177,7 +222,28 @@
         'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
         'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
       }).then(function () {
-        gapi.client.load('calendar', 'v3', listUpcomingEvents);
+        // Add event listener for the filter button
+        var filterButton = document.getElementById('filterButton');
+        filterButton.addEventListener('click', function () {
+          var monthSelector = document.getElementById('monthSelector');
+          var yearSelector = document.getElementById('yearSelector');
+          var selectedMonth = parseInt(monthSelector.value);
+          var selectedYear = parseInt(yearSelector.value);
+
+          listUpcomingEvents(selectedMonth, selectedYear);
+        });
+
+        // Initialize with current month and year
+        var currentDate = new Date();
+        var currentMonth = currentDate.getMonth();
+        var currentYear = currentDate.getFullYear();
+        var monthSelector = document.getElementById('monthSelector');
+        var yearSelector = document.getElementById('yearSelector');
+        monthSelector.value = currentMonth.toString();
+        yearSelector.value = currentYear.toString();
+
+        // List events for the current month and year
+        listUpcomingEvents(currentMonth, currentYear);
       });
     }
 
