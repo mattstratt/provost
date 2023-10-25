@@ -169,7 +169,7 @@
             // Define the bold keywords and split the description accordingly
             var boldKeywords = ["Sponsored By:", "Who is this Event for?:", "Information About the Event:", "Location:", "Registration or Virtual Meeting Link (If Applicable):"];
             var descriptionParts = description.split('\n');
-            
+
             // Process each description part and make keywords bold
             descriptionParts.forEach(function(part) {
               var isBold = false;
@@ -180,7 +180,7 @@
                   break;
                 }
               }
-              if (!isBold && part.trim() !== "") { // Check if part is not empty
+              if (!isBold) {
                 descriptionElement.innerHTML += `${part}<br>`;
               }
             });
@@ -189,10 +189,14 @@
               var linkElement = document.createElement('a');
               linkElement.className = 'event-link';
               linkElement.href = meetingLink;
-              linkElement.textContent = meetingLink; // Show the meeting link as text
+              linkElement.textContent = "Click here for more details";
               linkElement.target = "_blank"; // This opens the link in a new tab/window
 
-              descriptionElement.appendChild(linkElement); // Add the meeting link
+              // Wrap the link in a <div> for a new line
+              var linkContainer = document.createElement('div');
+              linkContainer.appendChild(linkElement);
+
+              descriptionElement.appendChild(linkContainer); // Add the wrapped link
             }
 
             eventContainer.appendChild(dateElement);
@@ -215,7 +219,7 @@
 
     function initClient() {
       gapi.client.init({
-        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
+        'apiKey': 'YOUR_API_KEY',
         'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
       }).then(function () {
         // Add event listener for the filter button
