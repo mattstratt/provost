@@ -180,12 +180,12 @@
                   break;
                 }
               }
-              if (!isBold) {
+              if (!isBold && part.trim() !== "") { // Check if part is not empty
                 descriptionElement.innerHTML += `${part}<br>`;
               }
             });
 
-            if (meetingLink) {
+            if (meetingLink && meetingLink !== "null") {
               var linkElement = document.createElement('a');
               linkElement.className = 'event-link';
               linkElement.href = meetingLink;
