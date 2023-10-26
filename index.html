@@ -108,12 +108,10 @@
     }
 
     function extractMeetingLink(description) {
-      // Use a regular expression to find URLs in the description
       var urlRegex = /https?:\/\/[^\s]+/g;
       var matches = description.match(urlRegex);
 
       if (matches && matches.length > 0) {
-        // Return the first URL found in the description
         return matches[0];
       } else {
         return null;
@@ -137,7 +135,7 @@
         var eventsList = document.getElementById('events-list');
 
         if (events.length > 0) {
-          eventsList.innerHTML = ''; // Clear the previous events
+          eventsList.innerHTML = '';
 
           for (var i = 0; i < events.length; i++) {
             var event = events[i];
@@ -146,10 +144,10 @@
             var eventLink = event.htmlLink;
             var eventLocation = event.location || 'Location not specified';
             var description = event.description || 'No description available';
-            var meetingLink = extractMeetingLink(description); // Extract meeting link
+            var meetingLink = extractMeetingLink(description);
             var eventFor = description.includes('Who is this Event For: ') ? description.split('Who is this Event For: ')[1] : null;
 
-            var eventContainer = document.createElement('div'); // Define eventContainer here
+            var eventContainer = document.createElement('div');
 
             var dateElement = document.createElement('h3');
             dateElement.className = 'event-date';
@@ -166,11 +164,9 @@
             var descriptionElement = document.createElement('p');
             descriptionElement.className = 'event-description';
 
-            // Define the bold keywords and split the description accordingly
             var boldKeywords = ["Sponsored By:", "Who is this Event for?:", "Information About the Event:", "Location:", "Registration or Virtual Meeting Link (If Applicable):"];
             var descriptionParts = description.split('\n');
             
-            // Process each description part and make keywords bold
             descriptionParts.forEach(function(part) {
               var isBold = false;
               for (var j = 0; j < boldKeywords.length; j++) {
@@ -180,7 +176,7 @@
                   break;
                 }
               }
-              if (!isBold && part.trim() !== "") { // Check if part is not empty
+              if (!isBold && part.trim() !== "") {
                 descriptionElement.innerHTML += `${part}<br>`;
               }
             });
@@ -189,10 +185,15 @@
               var linkElement = document.createElement('a');
               linkElement.className = 'event-link';
               linkElement.href = meetingLink;
-              linkElement.textContent = meetingLink; // Show the meeting link as text
-              linkElement.target = "_blank"; // This opens the link in a new tab/window
+              linkElement.textContent = meetingLink;
+              linkElement.target = "_blank";
 
-              descriptionElement.appendChild(linkElement); // Add the meeting link
+              descriptionElement.appendChild(linkElement);
+            }
+
+            // Check if there's a meeting link before adding the line
+            if (meetingLink) {
+              descriptionElement.innerHTML += `Registration or Virtual Meeting Link (If Applicable):<br>${meetingLink}<br>`;
             }
 
             eventContainer.appendChild(dateElement);
@@ -215,10 +216,9 @@
 
     function initClient() {
       gapi.client.init({
-        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg',
+        'apiKey': 'AIzaSyAecA9n1YO3WPakqJ9ogmSni0GnseQtvTg', // Replace with your API key
         'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
       }).then(function () {
-        // Add event listener for the filter button
         var filterButton = document.getElementById('filterButton');
         filterButton.addEventListener('click', function () {
           var monthSelector = document.getElementById('monthSelector');
@@ -229,7 +229,6 @@
           listUpcomingEvents(selectedMonth, selectedYear);
         });
 
-        // Initialize with current month and year
         var currentDate = new Date();
         var currentMonth = currentDate.getMonth();
         var currentYear = currentDate.getFullYear();
@@ -238,7 +237,6 @@
         monthSelector.value = currentMonth.toString();
         yearSelector.value = currentYear.toString();
 
-        // List events for the current month and year
         listUpcomingEvents(currentMonth, currentYear);
       });
     }
